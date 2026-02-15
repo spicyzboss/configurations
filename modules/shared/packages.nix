@@ -35,6 +35,8 @@ let
     openssh
     pandoc
     ripgrep
+    rustc
+    cargo
     starship
     terraform
     tflint
