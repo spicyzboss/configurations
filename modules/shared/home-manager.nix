@@ -73,7 +73,7 @@ in
       "*" = {
         sendEnv = [ "LANG" "LC_*" ];
         hashKnownHosts = true;
-        identityAgent = sshAgentSocket;
+        extraOptions = { IdentityAgent = "\"${sshAgentSocket}\""; };
       };
       "github.com" = {
         identityFile = [ (sshPubPath "spicyzboss.pub") ];
