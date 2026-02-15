@@ -80,7 +80,9 @@ Enter your Mac password when asked. This step will:
 
 ### Step 6: Finish setup
 
-1. **1Password** — Open 1Password, sign in, then enable **Settings → Developer → Use the SSH Agent**. Git signing and SSH use 1Password.
+1. **1Password** — Open 1Password, sign in, then in **Settings → Developer** enable:
+   - **Use the SSH Agent** — Git signing and SSH use 1Password
+   - **Integrate with 1Password CLI** — For `op` commands (e.g. `op inject`). Quick open: `open "onepassword://settings/developers"`
 
 2. **Use SSH for git** (optional) — `git remote set-url origin git@github.com:spicyzboss/configurations.git`
 
