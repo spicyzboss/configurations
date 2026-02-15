@@ -10,13 +10,20 @@ in
   ];
 
   programs.fish.enable = true;
-  environment.shells = [ pkgs.fish ];
+  programs.zsh = {
+    enable = true;
+    interactiveShellInit = ''
+      if [[ $(ps -o command= -p "$PPID" | awk '{print $1}') != 'fish' ]]
+      then
+        exec fish -l
+      fi
+    '';
+  };
 
   users.users.${user} = {
     name     = "${user}";
     home     = "/Users/${user}";
     isHidden = false;
-    shell    = pkgs.fish;
   };
 
   homebrew = {
