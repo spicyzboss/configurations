@@ -12,6 +12,9 @@ in
   ".ssh/boss-spicyz100x.pub" = {
     text = work100xPublicKey;
   };
+  ".hushlogin" = {
+    text = "";
+  };
   ".config/1Password/ssh/agent.toml" = {
     text = ''
       [[ssh-keys]]
