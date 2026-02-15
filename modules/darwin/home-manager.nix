@@ -28,17 +28,8 @@ in
   };
 
   homebrew = {
-    # This is a module from nix-darwin
-    # Homebrew is *installed* via the flake input nix-homebrew
-
-    # These app IDs are from using the mas CLI app
-    # mas = mac app store
-    # https://github.com/mas-cli/mas
-    #
-    # $ nix shell nixpkgs#mas
-    # $ mas search <app name>
-    #
     enable = true;
+    onActivation.cleanup = "uninstall";
     casks  = pkgs.callPackage ./casks.nix {};
     #masApps = {
     #  "hidden-bar"   = 1452453066;
