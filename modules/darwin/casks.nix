@@ -2,6 +2,7 @@ _:
 
 [
   "1password"
+  "alt-tab"
   "claude"
   "cloudflare-warp"
   "cursor"
