@@ -52,6 +52,8 @@ in
         tilesize = 48;
       };
       finder = {
+        AppleShowAllExtensions = true;
+        AppleShowAllFiles = true;
         _FXShowPosixPathInTitle = false;
       };
       trackpad = {
