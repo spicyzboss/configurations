@@ -64,9 +64,8 @@ in
     enable   = true;
     username = user;
     entries  = [
-      { path = "/System/Library/CoreServices/Finder.app"; }
       { path = "/Applications/Google Chrome.app"; }
-      { path = "/System/Applications/Launchpad.app"; }
+      { path = "/System/Applications/Apps.app"; }
       { path = "/Applications/Cursor.app"; }
       { path = "${pkgs.kitty}/Applications/Kitty.app"; }
       { path = "/Applications/Slack.app"; }
