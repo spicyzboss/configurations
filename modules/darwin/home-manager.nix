@@ -10,6 +10,7 @@ in
   ];
 
   programs.fish.enable = true;
+  environment.shells = [ pkgs.fish ];
 
   users.users.${user} = {
     name     = "${user}";
