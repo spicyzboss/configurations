@@ -11,22 +11,19 @@ in
 
   programs.fish.enable = true;
 
-  environment.shells = [pkgs.fish];
-
-  system.activationScripts.extraActivation.text = ''
-    current=$(dscl . -read /Users/${user} UserShell 2>/dev/null | sed 's/.*: //')
-    fish_path="${pkgs.fish}/bin/fish"
-    if [ -n "$current" ] && [ "$current" != "$fish_path" ]; then
-      dscl . -change /Users/${user} UserShell "$current" "$fish_path"
-    elif [ -z "$current" ]; then
-      dscl . -create /Users/${user} UserShell "$fish_path"
-    fi
-  '';
+  programs.zsh = {
+    enable = true;
+    initExtra = ''
+      if [[ $(ps -o command= -p "$PPID" | awk '{print $1}') != 'fish' ]]
+      then
+        exec fish -l
+      fi
+    '';
+  };
 
   users.users.${user} = {
     name     = "${user}";
     home     = "/Users/${user}";
-    shell    = pkgs.fish;
     isHidden = false;
   };
 
