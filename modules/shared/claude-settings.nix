@@ -67,11 +67,11 @@ in
   };
 
   home.activation.claudeSettingsGlm = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    if ${op}/bin/op inject -i "$HOME/.claude/settings-glm.json.tpl" -o "$HOME/.claude/settings-glm.json"; then
+    if ${op}/bin/op inject -i "$HOME/.claude/settings-glm.json.tpl" -o "$HOME/.claude/settings-glm.json" --force; then
       echo "Created ~/.claude/settings-glm.json from 1Password"
     else
       echo "1Password not ready. After signing in, run:"
-      echo "  op inject -i $HOME/.claude/settings-glm.json.tpl -o $HOME/.claude/settings-glm.json"
+      echo "  op inject -i $HOME/.claude/settings-glm.json.tpl -o $HOME/.claude/settings-glm.json --force"
     fi
   '';
 }
