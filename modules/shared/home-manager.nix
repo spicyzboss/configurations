@@ -165,6 +165,7 @@ in
       lg = "lazygit";
     };
     interactiveShellInit = ''
+      set -gx fish_greeting ""
       fish_add_path -a $HOME/.local/bin $HOME/.bun/bin $HOME/go/bin $HOME/.pyenv/bin
       set -gx BUN_INSTALL $HOME/.bun
       set -gx GOPATH $HOME/go
