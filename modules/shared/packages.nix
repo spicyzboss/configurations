@@ -8,8 +8,6 @@ let
 
   linuxOnlyPackages = with pkgs; [ jetbrains.datagrip slack ];
   basePackages = with pkgs; [
-    bat
-    btop
     bun
     code-cursor
     coreutils
@@ -17,7 +15,6 @@ let
     dust
     fd
     ffmpeg
-    fzf
     go
     gcc
     gh
@@ -28,7 +25,6 @@ let
     imagemagick
     jq
     kitty
-    lazygit
     myPython
     neofetch
     nodejs_22
@@ -37,7 +33,6 @@ let
     ripgrep
     rustc
     cargo
-    starship
     terraform
     tflint
     tree
@@ -45,7 +40,6 @@ let
     unzip
     uv
     zip
-    yazi
     zoxide
   ];
   filteredPackages = basePackages

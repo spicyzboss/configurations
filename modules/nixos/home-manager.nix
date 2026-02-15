@@ -10,6 +10,20 @@ in
 {
   imports = [ ../shared/claude-settings.nix ];
 
+  catppuccin = {
+    flavor = "mocha";
+    bat.enable = true;
+    btop.enable = true;
+    delta.enable = true;
+    fish.enable = true;
+    fzf.enable = true;
+    helix.enable = true;
+    kitty.enable = true;
+    lazygit.enable = true;
+    starship.enable = true;
+    yazi.enable = true;
+  };
+
   home = {
     enableNixpkgsReleaseCheck = false;
     username = "${user}";

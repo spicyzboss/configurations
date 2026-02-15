@@ -124,7 +124,6 @@ in
       "ctrl+alt+s" = "goto_layout stack";
     };
     shellIntegration.mode = "no-cursor";
-    extraConfig = "include catppuccin-mocha.conf";
   };
 
   fish = {
@@ -173,18 +172,17 @@ in
       ${lib.optionalString pkgs.stdenv.isDarwin ''eval "$(/opt/homebrew/bin/brew shellenv)"''}
       test -f $HOME/.cargo/env.fish && source $HOME/.cargo/env.fish
     '';
-    plugins = [
-      {
-        name = "catppuccin-fish";
-        src = pkgs.fetchFromGitHub {
-          owner = "catppuccin";
-          repo = "fish";
-          rev = "521560ce2075ca757473816aa31914215332bac9";
-          sha256 = "sha256-5CXdzym6Vp+FbKTVBtVdWoh3dODudADIzOLXIyIIxgQ=";
-        };
-      }
-    ];
   };
+
+  bat.enable = true;
+
+  btop.enable = true;
+
+  fzf.enable = true;
+
+  lazygit.enable = true;
+
+  yazi.enable = true;
 
   starship = {
     enable = true;

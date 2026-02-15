@@ -1,4 +1,4 @@
-{ config, pkgs, lib, home-manager, ... }:
+{ config, pkgs, lib, home-manager, catppuccin, ... }:
 
 let
   user        = "spicyz";
@@ -50,7 +50,7 @@ in
     useGlobalPkgs = true;
     users.${user} = { pkgs, config, lib, ... }:
       {
-        imports = [ ../shared/claude-settings.nix ];
+        imports = [ ../shared/claude-settings.nix catppuccin.homeModules.catppuccin ];
         home = {
           enableNixpkgsReleaseCheck = false;
           packages = pkgs.callPackage ./packages.nix {};
@@ -65,6 +65,19 @@ in
           };
         };
         programs = {} // import ../shared/home-manager.nix { inherit config pkgs lib; };
+        catppuccin = {
+          flavor = "mocha";
+          bat.enable = true;
+          btop.enable = true;
+          delta.enable = true;
+          fish.enable = true;
+          fzf.enable = true;
+          helix.enable = true;
+          kitty.enable = true;
+          lazygit.enable = true;
+          starship.enable = true;
+          yazi.enable = true;
+        };
         manual.manpages.enable = false;
       };
   };

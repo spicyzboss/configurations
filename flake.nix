@@ -31,8 +31,9 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    catppuccin.url = "github:catppuccin/nix";
   };
-  outputs = { self, darwin, nix-homebrew, homebrew-bundle, homebrew-core, homebrew-cask, home-manager, plasma-manager, nixpkgs, disko } @inputs:
+  outputs = { self, darwin, nix-homebrew, homebrew-bundle, homebrew-core, homebrew-cask, home-manager, plasma-manager, nixpkgs, disko, catppuccin } @inputs:
     let
       user = "spicyz";
       linuxSystems = [ "x86_64-linux" ];
@@ -98,10 +99,14 @@
               disko.nixosModules.disko
               home-manager.nixosModules.home-manager {
                 home-manager = {
-                  sharedModules = [ plasma-manager.homeModules.plasma-manager ]; 
+                  sharedModules = [
+                    plasma-manager.homeModules.plasma-manager
+                    catppuccin.homeModules.catppuccin
+                  ];
+                  extraSpecialArgs = { inherit inputs; };
                   useGlobalPkgs = true;
                   useUserPackages = true;
-                  users.${user} = { config, pkgs, lib, ... }:
+                  users.${user} = { config, pkgs, lib, inputs, ... }:
                     import ./modules/nixos/home-manager.nix { inherit config pkgs lib inputs; };
                 };
               }
