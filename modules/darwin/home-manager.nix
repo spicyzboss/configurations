@@ -10,19 +10,17 @@ in
   ];
 
   programs.fish.enable = true;
-  programs.zsh = {
-    enable = true;
-    interactiveShellInit = ''
-      if [[ $(ps -o command= -p "$PPID" | awk '{print $1}') != 'fish' ]]
-      then
-        exec fish -l
-      fi
-    '';
-  };
+
+  environment.shells = [pkgs.fish];
+
+  system.activationScripts.setFishAsShell = ''
+    dscl . -create /Users/${user} UserShell ${pkgs.fish}/bin/fish
+  '';
 
   users.users.${user} = {
     name     = "${user}";
     home     = "/Users/${user}";
+    shell    = pkgs.fish;
     isHidden = false;
   };
 
