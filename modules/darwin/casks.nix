@@ -13,4 +13,5 @@ _:
   "slack"
   "steam"
   "telegram"
+  "tradingview"
 ]
