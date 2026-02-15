@@ -8,6 +8,8 @@ _:
   "datagrip"
   "discord"
   "google-chrome"
+  "logi-options+"
+  "openvpn-connect"
   "postman"
   "raycast"
   "slack"
