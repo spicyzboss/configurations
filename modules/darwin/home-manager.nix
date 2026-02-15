@@ -13,7 +13,7 @@ in
 
   programs.zsh = {
     enable = true;
-    initExtra = ''
+    interactiveShellInit = ''
       if [[ $(ps -o command= -p "$PPID" | awk '{print $1}') != 'fish' ]]
       then
         exec fish -l
