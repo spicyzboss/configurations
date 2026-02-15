@@ -14,7 +14,13 @@ in
   environment.shells = [pkgs.fish];
 
   system.activationScripts.setFishAsShell = ''
-    dscl . -create /Users/${user} UserShell ${pkgs.fish}/bin/fish
+    current=$(dscl . -read /Users/${user} UserShell 2>/dev/null | sed 's/.*: //')
+    fish_path="${pkgs.fish}/bin/fish"
+    if [ -n "$current" ] && [ "$current" != "$fish_path" ]; then
+      dscl . -change /Users/${user} UserShell "$current" "$fish_path"
+    elif [ -z "$current" ]; then
+      dscl . -create /Users/${user} UserShell "$fish_path"
+    fi
   '';
 
   users.users.${user} = {
