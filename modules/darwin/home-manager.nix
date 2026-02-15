@@ -13,7 +13,7 @@ in
 
   environment.shells = [pkgs.fish];
 
-  system.activationScripts.setFishAsShell = ''
+  system.activationScripts.extraActivation.text = ''
     current=$(dscl . -read /Users/${user} UserShell 2>/dev/null | sed 's/.*: //')
     fish_path="${pkgs.fish}/bin/fish"
     if [ -n "$current" ] && [ "$current" != "$fish_path" ]; then
