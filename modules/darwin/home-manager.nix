@@ -50,12 +50,20 @@ in
           sessionVariables = {
             EDITOR = "hx";
             VISUAL = "hx";
+            DOCKER_HOST = "unix://${config.home.homeDirectory}/.colima/default/docker.sock";
             PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1";
             PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS = "true";
             PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
           };
         };
         programs = {} // import ../shared/home-manager.nix { inherit config pkgs lib; };
+        launchd.agents.colima = {
+          enable = true;
+          config = {
+            ProgramArguments = [ "${pkgs.colima}/bin/colima" "start" ];
+            RunAtLoad = true;
+          };
+        };
         catppuccin = {
           flavor = "mocha";
           bat.enable = true;
