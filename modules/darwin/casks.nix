@@ -7,6 +7,7 @@ _:
   "cursor"
   "datagrip"
   "discord"
+  "figma"
   "google-chrome"
   "logi-options+"
   "openvpn-connect"
