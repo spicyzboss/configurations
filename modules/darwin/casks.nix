@@ -17,4 +17,5 @@ _:
   "steam"
   "telegram"
   "tradingview"
+  "whatsapp"
 ]
