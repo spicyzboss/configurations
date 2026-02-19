@@ -182,7 +182,10 @@ in
 
   lazygit.enable = true;
 
-  yazi.enable = true;
+  yazi = {
+    enable = true;
+    shellWrapperName = "y";
+  };
 
   starship = {
     enable = true;
