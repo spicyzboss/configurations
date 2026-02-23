@@ -756,7 +756,7 @@ Assistant should:
 # shape
 
 Review the current plan and shape it into a perfect one. This command will:
-1. Find and read the current plan file
+1. Read the current plan file
 2. Evaluate plan completeness and quality
 3. Ask clarifying questions to fill gaps
 4. Update the plan until it's ready to build
@@ -765,12 +765,7 @@ Review the current plan and shape it into a perfect one. This command will:
 
 When the user runs this command, follow these steps:
 
-### Step 1: Locate Plan File
-- Find the most recent plan file in `/Users/spicyz/.claude/plans/*.md`
-- If no plan file exists, inform the user and exit
-- If multiple plan files exist, use the most recently modified one
-
-### Step 2: Read and Analyze the Plan
+### Step 1: Read and Analyze the Plan
 - Read the entire plan file contents
 - Evaluate the plan for:
   - **Clear objective**: Is the goal well-defined?
@@ -780,7 +775,7 @@ When the user runs this command, follow these steps:
   - **Edge cases**: Are potential issues addressed?
   - **Dependencies**: Are external dependencies or assumptions noted?
 
-### Step 3: Determine Plan Quality
+### Step 2: Determine Plan Quality
 - **Plan is ready** if:
   - Objective is clear and specific
   - Implementation steps are well-defined
@@ -790,7 +785,7 @@ When the user runs this command, follow these steps:
 
 - **Plan needs shaping** if any of the above are missing or unclear
 
-### Step 4: Shape the Plan (if needed)
+### Step 3: Shape the Plan (if needed)
 If the plan needs shaping, ask targeted questions to fill gaps:
 
 **For unclear objectives:**
@@ -815,7 +810,7 @@ If the plan needs shaping, ask targeted questions to fill gaps:
 
 Ask up to 3-5 targeted questions at a time. Gather answers, then update the plan file with the clarified information.
 
-### Step 5: Confirm Readiness
+### Step 4: Confirm Readiness
 Once shaping is complete (or if plan was already ready):
 - Present a summary of the final plan
 - State that the plan is ready to build
@@ -836,22 +831,21 @@ Once shaping is complete (or if plan was already ready):
 User: "shape"
 
 Assistant should:
-1. Find plan file at `/Users/spicyz/.claude/plans/feature-x.md`
-2. Read and analyze the plan
-3. **If plan needs shaping**:
+1. Read and analyze the plan
+2. **If plan needs shaping**:
    - "I reviewed the plan. I have a few questions to shape it:
      1. Which specific files need to be modified for this feature?
      2. Should we follow the existing pattern in `src/components/`?
      3. How should we verify this works - manual testing or automated tests?"
    - Gather answers
    - Update plan file with clarified details
-4. **Final summary**:
+3. **Final summary**:
    - Present the completed plan summary
    - "The plan is now ready to build when you're ready."
 
 ## Error Handling
 
-- **No plan file exists**: Inform the user: "No plan file found in `/Users/spicyz/.claude/plans/`. Please enter plan mode first."
+- **No plan file exists**: Inform the user: "No plan file found. Please enter plan mode first."
 - **Plan file is empty**: Ask the user what they want to plan
 - **Plan file is malformed**: Ask the user to clarify what they're trying to accomplish
 - **User wants more changes**: Continue asking questions and updating the plan
