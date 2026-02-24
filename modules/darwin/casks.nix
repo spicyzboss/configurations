@@ -2,6 +2,7 @@ _:
 
 [
   "1password"
+  "claude"
   "cloudflare-warp"
   "cursor"
   "datagrip"
