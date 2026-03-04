@@ -851,4 +851,165 @@ Assistant should:
 - **User wants more changes**: Continue asking questions and updating the plan
     '';
   };
+
+  ".cursor/commands/build.md" = {
+    text = ''
+# build
+
+Execute the current plan using parallel agents wherever possible. Reads the plan's todo groups and launches multiple agents concurrently for each group, then proceeds to the next group once all agents finish.
+
+## Workflow
+
+### Step 1: Read the Plan
+
+- Read the current plan file
+- If no plan file is found, ask the user to reference one or enter plan mode first
+- If todos are not grouped (no `g<N>-` prefixes), suggest running `/extract` first to identify parallelism, then ask the user if they want to proceed sequentially anyway
+
+### Step 2: Identify Groups
+
+- Collect all todos, grouped by their `g<N>` prefix
+- Sort groups numerically (g1 before g2 before g3…)
+- Todos without a group prefix are treated as a single sequential group at the end
+
+### Step 3: Execute Group by Group
+
+For each group in order:
+
+1. **Mark all todos in the group as `in_progress`**
+2. **Launch one agent per todo** using the Task tool with `subagent_type: "generalPurpose"`
+   - Each agent gets a detailed, self-contained prompt (see Prompt Guidelines below)
+   - All agents in the same group are launched in a **single message** (parallel tool calls)
+3. **Wait for all agents in the group to finish** before proceeding to the next group
+4. **Mark completed todos** after each agent reports back
+5. **Handle failures** before moving on (see Error Handling below)
+
+Repeat until all groups are done.
+
+### Step 4: Verify
+
+After all groups complete:
+- Run any verification steps mentioned in the plan (typecheck, lint, tests)
+- Report the final status to the user
+
+## Prompt Guidelines for Agents
+
+Each agent must be self-contained — it has no access to the conversation history. Include in every agent prompt:
+
+- **Full absolute paths** for every file to read or modify
+- **Exact content** to write, or precise diffs to apply
+- **The reason** for each change (helps the agent make correct decisions if it hits edge cases)
+- **A verification step** at the end (e.g. run `tsc --noEmit`, confirm file exists)
+- **What to report back** — the agent's return value is the only output you see
+
+Avoid vague instructions like "update the config" — be explicit about what the final state should look like.
+
+## Important Notes
+
+- **One agent per todo** — do not bundle multiple todos into one agent unless they are trivially small and touch the same file
+- **Never run agents from different groups at the same time** — group ordering encodes real dependencies
+- **Always mark todos in_progress before launching** — this makes progress visible in the UI
+- **Read the plan fully before launching any agent** — some plans have prerequisite notes or constraints outside the todos
+- **If a plan has no group prefixes**, default to launching one agent per todo sequentially, not in parallel
+
+## Error Handling
+
+- **Agent reports an error**: Mark the todo as blocked, report the error to the user, and ask how to proceed before continuing
+- **File conflict detected**: Stop the group, resolve the conflict manually or with a single agent, then re-run the affected group
+- **Verification fails after a group**: Do not proceed to the next group — diagnose and fix first
+- **Plan file not found**: Ask the user to reference a plan file or enter plan mode
+- **No group prefixes on todos**: Suggest running `/extract` first, or ask user to confirm sequential execution
+    '';
+  };
+
+  ".cursor/commands/extract.md" = {
+    text = ''
+# extract
+
+Analyze the current plan's todos and restructure them into parallelizable groups so they can be built faster using multiple agents.
+
+## Workflow
+
+### Step 1: Read the Plan
+
+- Read the current plan file
+- If no plan file is referenced or found, ask the user to provide one or enter plan mode first
+
+### Step 2: Analyze Todo Dependencies
+
+For each todo item, determine:
+- **Inputs**: What does this task need to exist or be done before it can start?
+- **Outputs**: What does this task produce that other tasks depend on?
+- **Conflict risk**: Does this task write to the same files as another task?
+
+Common dependency patterns to look for:
+- Package installs (`bun add`, `npm install`) modify `package.json` and `bun.lockb` — nothing else should touch those files concurrently
+- Pure file edits with no shared files have zero conflicts and can always run in parallel
+- Config scaffolding (creating new files) is safe to parallelize unless two tasks create the same file
+- CLI init commands (e.g. `husky init`) need the package installed first
+
+### Step 3: Build the Dependency Graph
+
+Draw a mental (or explicit) dependency graph and identify:
+- Tasks with no dependencies on each other → **parallel candidates**
+- Tasks that must follow a specific task → **sequential, placed in a later group**
+- Tasks that block everything else → **must go first, alone if needed**
+
+### Step 4: Restructure Todos into Groups
+
+Replace the existing todo list with grouped todos using this naming convention:
+
+- Prefix each todo `id` with `g<N>-<short-slug>` where `N` is the group number (1, 2, 3…)
+- Prefix each todo `content` with `[Group N]` so the group is visible at a glance
+- Tasks in the same group number are safe to run in parallel
+- Tasks in group N+1 must wait for all group N tasks to finish
+
+Example structure:
+```
+- id: g1-fix-source-files    → [Group 1] Fix source files (pure edits, no conflicts)
+- id: g1-install-packages    → [Group 1] Install packages (touches package.json only)
+- id: g2-setup-scripts       → [Group 2] Add scripts to package.json (needs install done first)
+- id: g2-init-git-hooks      → [Group 2] Init husky (needs package installed)
+```
+
+### Step 5: Add Execution Map to Plan
+
+After restructuring todos, add or update an **Execution Map** section in the plan body with a flowchart showing the groups and their flow:
+
+```mermaid
+flowchart TD
+    g1a["Group 1a: task description"]
+    g1b["Group 1b: task description"]
+    g2["Group 2: task description"]
+    g1a --> g2
+    g1b --> g2
+```
+
+### Step 6: Present Summary
+
+Summarize the result:
+- How many groups were identified
+- Which tasks are parallel within each group
+- Which tasks had to be sequenced and why
+- Confirm the plan file has been updated
+
+## Naming Guidelines
+
+Avoid generic labels like "WAVE" or "Phase". Use group numbers (`Group 1`, `Group 2`) which are neutral, clear, and sort naturally. The short slug in the id should describe what the group does, not when it runs.
+
+## Important Notes
+
+- **Never merge tasks that write to the same file** — even if they seem unrelated, concurrent writes cause corruption
+- **Package installs always get their own group slot** if anything else modifies `package.json` in a later step
+- **Do not reorder tasks within a group** — the group only declares parallel safety, not execution order within
+- **Update the plan file** with the new todo structure and execution map
+- **Do not start building** — this command only restructures the plan
+
+## Error Handling
+
+- **No plan file found**: Ask the user to reference a plan file or enter plan mode first
+- **All tasks are sequential**: That's fine — explain why no parallelism is possible and leave todos unchanged
+- **Ambiguous dependency**: Default to sequential (put in a later group) and note the uncertainty in the plan
+    '';
+  };
 }

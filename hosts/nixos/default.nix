@@ -184,7 +184,7 @@
   users.users.${user} = {
     isNormalUser = true;
     description  = "spicyz";
-    extraGroups  = [ "networkmanager" "wheel" "docker" ];
+    extraGroups  = [ "networkmanager" "wheel" "docker" "vboxusers" ];
     shell = pkgs.fish;
   };
 
@@ -260,6 +260,9 @@
 
   # Docker
   virtualisation.docker.enable = true;
+
+  # VirtualBox
+  virtualisation.virtualbox.host.enable = true;
 
   # Create symlink for easier Windows partition access
   systemd.tmpfiles.rules = [

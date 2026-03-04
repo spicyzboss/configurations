@@ -10,6 +10,7 @@ _:
   "figma"
   "google-chrome"
   "logi-options+"
+  "notion"
   "openvpn-connect"
   "postman"
   "raycast"
@@ -17,5 +18,6 @@ _:
   "steam"
   "telegram"
   "tradingview"
+  "virtualbox"
   "whatsapp"
 ]

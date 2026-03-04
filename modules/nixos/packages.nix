@@ -13,6 +13,7 @@ shared-packages ++ [
   cliphist
   docker-compose
   ninja
+  notion-app
   chromium
   discord
   xclip
@@ -32,4 +33,5 @@ shared-packages ++ [
   libnotify
   rofi
   linuxKernel.packages.linux_zen.xone
+  virtualbox
 ]
