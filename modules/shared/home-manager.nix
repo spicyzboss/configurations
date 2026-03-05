@@ -171,6 +171,7 @@ in
       set -gx GOPATH $HOME/go
       set -gx PYENV_ROOT $HOME/.pyenv
       ${lib.optionalString pkgs.stdenv.isDarwin ''eval "$(/opt/homebrew/bin/brew shellenv)"''}
+      ${lib.optionalString pkgs.stdenv.isDarwin ''fish_add_path -a /usr/local/texlive/2026/bin/universal-darwin''}
       test -f $HOME/.cargo/env.fish && source $HOME/.cargo/env.fish
     '';
   };
