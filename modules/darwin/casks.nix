@@ -10,6 +10,7 @@ _:
   "figma"
   "google-chrome"
   "logi-options+"
+  "mactex-no-gui"
   "notion"
   "openvpn-connect"
   "postman"
