@@ -19,7 +19,7 @@ When the user requests to create a PR, follow these steps:
 
 ### Step 2: Get Jira Ticket Number
 - Ask for Jira ticket number upfront (e.g., ING-342, ING-400, TICKET-123)
-- This will be used in both branch name and commit message
+- This will be used in branch name only
 
 ### Step 3: Create Feature Branch (if needed)
 - Check if already on a feature branch (not main/master/develop)
@@ -41,16 +41,15 @@ When the user requests to create a PR, follow these steps:
 
 ### Step 5: Commit Changes
 - Show summary of staged vs unstaged changes
-- Create a commit message following conventional commits format with ticket:
+- Create a commit message following conventional commits format (do not include ticket number):
   ```
-  {type}: {short description} ({ticket})
+  {type}: {short description}
 
   - {bullet point describing change 1}
   - {bullet point describing change 2}
   - {bullet point describing change 3}
   ```
 - Types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `perf`, `ci`, `style`, `build`
-- Include ticket number in parentheses on first line
 - If many changes, offer to show diff preview before committing
 - Run: `git commit -m "{commit message}"`
 
@@ -116,7 +115,6 @@ When the user requests to create a PR, follow these steps:
 - **Verify remote exists**: Check `git remote` before pushing
 - **Draft PR option**: Allow users to create draft PRs for work-in-progress
 - **Copy PR link**: Store PR URL in clipboard for easy sharing
-- **Ticket in commit**: Always include ticket number in commit message
 - **Write descriptive commit messages** - future you will thank you
 - **Test before committing** - ensure tests pass and linter is clean
 - **Check PR description** - make sure it accurately describes changes
@@ -133,7 +131,7 @@ Assistant should:
 5. Create branch: `feat/ing-342-add-agents-to-client-products`
 6. Stage files: `git add file1.go file2.go file3_test.go`
 7. Show staged vs unstaged summary
-8. Commit: `feat: add agents to client products (ING-342)`
+8. Commit: `feat: add agents to client products`
 9. Verify remote exists and connectivity
 10. Show commit count being pushed
 11. Push: `git push -u origin feat/ing-342-add-agents-to-client-products`
