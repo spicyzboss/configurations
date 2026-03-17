@@ -29,5 +29,6 @@ in
 
   ".cursor/commands" = {
     source = ./cursor/commands;
+    force = true;
   };
 }

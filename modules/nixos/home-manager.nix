@@ -8,7 +8,7 @@ let
   kde-config = import ./kde-config.nix;
 in
 {
-  imports = [ ../shared/claude-settings.nix ];
+  imports = [ ../shared/claude-settings.nix ../shared/cursor-activation.nix ];
 
   catppuccin = {
     flavor = "mocha";
@@ -31,7 +31,6 @@ in
     packages = pkgs.callPackage ./packages.nix { inherit inputs config; };
     file = shared-files // import ./files.nix { inherit user pkgs; };
     stateVersion = "25.11";
-    
     sessionVariables = {
       EDITOR = "hx";
       VISUAL = "hx";
