@@ -25,11 +25,12 @@ When the user requests to create a PR, follow these steps:
 - Check if already on a feature branch (not main/master/develop)
 - If on feature branch, ask if they want to use it or create a new one
 - If on base branch, ask for:
+  - Type: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `perf`, `ci`, `style`, `build`
   - Brief feature description in kebab-case (2-5 words)
-- Create branch name in format: `{ticket}-{kebab-case-description}`
-  - Example: `ing-342-add-agents-to-client-products`
-  - Example: `ing-400-fix-login-bug`
-  - Example: `ing-500-update-api-documentation`
+- Create branch name in format: `{type}/{ticket}-{kebab-case-description}`
+  - Example: `feat/ing-342-add-agents-to-client-products`
+  - Example: `fix/ing-400-fix-login-bug`
+  - Example: `docs/ing-500-update-api-documentation`
 - Run: `git checkout -b {branch-name}`
 
 ### Step 4: Stage Changes
@@ -66,7 +67,7 @@ When the user requests to create a PR, follow these steps:
 ### Step 8: Create Pull Request
 - Ask if user wants a draft PR or regular PR
 - Use GitHub CLI: `gh pr create`
-- PR title: Format as `[{branch-target}][{branch-prefix-type}]: {description}`
+- PR title: Format as `[{branch-target}][{branch-prefix-type}]: {description}` (do not include ticket number; ticket goes in body only)
 - PR body should include:
   ```markdown
   ## Summary
@@ -127,17 +128,18 @@ User: "create branch and commit and push to remote and create pr"
 Assistant should:
 1. Check `git status` → verify working tree state
 2. Ask: "What Jira ticket is this for? (e.g., ING-342)"
-3. Ask: "Brief description? (e.g., 'add agents to client products')"
-4. Create branch: `ing-342-add-agents-to-client-products`
-5. Stage files: `git add file1.go file2.go file3_test.go`
-6. Show staged vs unstaged summary
-7. Commit: `feat: add agents to client products (ING-342)`
-8. Verify remote exists and connectivity
-9. Show commit count being pushed
-10. Push: `git push -u origin ing-342-add-agents-to-client-products`
-11. Ask: "Draft PR or regular PR? Which base branch? (develop/main)"
-12. Create PR with comprehensive description including ticket reference
-13. Copy PR URL to clipboard and share with user
+3. Ask: "Type? (feat/fix/docs/refactor/etc.)"
+4. Ask: "Brief description? (e.g., 'add agents to client products')"
+5. Create branch: `feat/ing-342-add-agents-to-client-products`
+6. Stage files: `git add file1.go file2.go file3_test.go`
+7. Show staged vs unstaged summary
+8. Commit: `feat: add agents to client products (ING-342)`
+9. Verify remote exists and connectivity
+10. Show commit count being pushed
+11. Push: `git push -u origin feat/ing-342-add-agents-to-client-products`
+12. Ask: "Draft PR or regular PR? Which base branch? (develop/main)"
+13. Create PR with comprehensive description including ticket reference
+14. Copy PR URL to clipboard and share with user
 
 ## Error Handling
 
