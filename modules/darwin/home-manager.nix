@@ -41,7 +41,7 @@ in
     useGlobalPkgs = true;
     users.${user} = { pkgs, config, lib, ... }:
       {
-        imports = [ ../shared/claude-settings.nix ../shared/cursor-activation.nix catppuccin.homeModules.catppuccin ];
+        imports = [ ../shared/claude-settings.nix ../shared/commands-activation.nix catppuccin.homeModules.catppuccin ];
         home = {
           enableNixpkgsReleaseCheck = false;
           packages = pkgs.callPackage ./packages.nix {};

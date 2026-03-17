@@ -27,8 +27,8 @@ in
     '';
   };
 
-  ".cursor/commands" = {
-    source = ./cursor/commands;
+  ".claude/commands" = {
+    source = ./commands;
     force = true;
   };
 }

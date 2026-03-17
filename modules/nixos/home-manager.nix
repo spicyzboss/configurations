@@ -8,7 +8,7 @@ let
   kde-config = import ./kde-config.nix;
 in
 {
-  imports = [ ../shared/claude-settings.nix ../shared/cursor-activation.nix ];
+  imports = [ ../shared/claude-settings.nix ../shared/commands-activation.nix ];
 
   catppuccin = {
     flavor = "mocha";
