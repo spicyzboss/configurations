@@ -2,6 +2,7 @@ _:
 
 [
   "1password"
+  "cmux"
   "claude"
   "cloudflare-warp"
   "cursor"
