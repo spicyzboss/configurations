@@ -50,6 +50,7 @@ in
           sessionVariables = {
             EDITOR = "hx";
             VISUAL = "hx";
+            JAVA_HOME = "${pkgs.jdk21}";
             DOCKER_HOST = "unix://${config.home.homeDirectory}/.colima/default/docker.sock";
             PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1";
             PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS = "true";

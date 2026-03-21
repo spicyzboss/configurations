@@ -34,6 +34,7 @@ in
     sessionVariables = {
       EDITOR = "hx";
       VISUAL = "hx";
+      JAVA_HOME = "${pkgs.jdk21}";
       PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1";
       PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS = "true";
       PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH = "${pkgs.chromium}/bin/chromium";

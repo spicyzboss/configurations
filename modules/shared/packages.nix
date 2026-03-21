@@ -23,6 +23,7 @@ let
     _1password-cli
     helix
     imagemagick
+    jdk21
     jq
     kitty
     myPython
