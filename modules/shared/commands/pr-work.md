@@ -1,8 +1,8 @@
 # pr-work
 
-Create a pull request following work-style conventions with Jira ticket tracking. This command will guide you through:
+Create a pull request following work-style conventions with optional Jira ticket tracking. This command will guide you through:
 1. Checking git status and verifying clean working tree
-2. Creating a feature branch with ticket number
+2. Creating a feature branch (with ticket prefix in the name only when a ticket is provided)
 3. Staging and committing changes
 4. Pushing to remote
 5. Creating a PR with GitHub CLI
@@ -17,9 +17,10 @@ When the user requests to create a PR, follow these steps:
 - **Pre-flight check**: If working tree is dirty (uncommitted changes) on base branch, ask if user wants to stash or commit first
 - Identify all changed files (modified, added, deleted)
 
-### Step 2: Get Jira Ticket Number
-- Ask for Jira ticket number upfront (e.g., ING-342, ING-400, TICKET-123)
-- This will be used in branch name only
+### Step 2: Jira Ticket Number (optional)
+- Ask whether this work has a Jira ticket. If yes, ask for the key in typical format (e.g. `ING-342`, `PROJ-123`).
+- If the user skips, says there is no ticket, or does not give a key matching `PROJECT-123` style: treat as **no ticket** — do not invent or require one.
+- When a ticket is provided: use it in the **branch name only** (lowercase), as below. When not provided: **omit** the ticket segment from the branch name entirely.
 
 ### Step 3: Create Feature Branch (if needed)
 - Check if already on a feature branch (not main/master/develop)
@@ -27,10 +28,14 @@ When the user requests to create a PR, follow these steps:
 - If on base branch, ask for:
   - Type: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `perf`, `ci`, `style`, `build`
   - Brief feature description in kebab-case (2-5 words)
-- Create branch name in format: `{type}/{ticket}-{kebab-case-description}`
-  - Example: `feat/ing-342-add-agents-to-client-products`
-  - Example: `fix/ing-400-fix-login-bug`
-  - Example: `docs/ing-500-update-api-documentation`
+- Branch name:
+  - **With ticket:** `{type}/{ticket-lowercase}-{kebab-case-description}`
+    - Example: `feat/ing-342-add-agents-to-client-products`
+    - Example: `fix/ing-400-fix-login-bug`
+    - Example: `docs/ing-500-update-api-documentation`
+  - **Without ticket:** `{type}/{kebab-case-description}` (no placeholder for a missing ticket)
+    - Example: `feat/add-agents-to-client-products`
+    - Example: `fix/login-validation-error`
 - Run: `git checkout -b {branch-name}`
 
 ### Step 4: Stage Changes
@@ -67,7 +72,7 @@ When the user requests to create a PR, follow these steps:
 - Ask if user wants a draft PR or regular PR
 - Use GitHub CLI: `gh pr create`
 - PR title: Format as `[{branch-target}][{branch-prefix-type}]: {description}` (do not include ticket number; ticket goes in body only)
-- PR body should include:
+- PR body should include `## Summary`, `## Changes`, `## Testing`, and `## DoD Checklist` as below. Add `## Ticket` with `- Jira: {ticket-number}` only when a ticket key was provided; if there was no ticket, omit the `## Ticket` section.
   ```markdown
   ## Summary
   {Brief description of what this PR does}
@@ -88,6 +93,7 @@ When the user requests to create a PR, follow these steps:
   - {Requirement 1}
   - {Requirement 2}
   ```
+  (When there is no Jira key, skip the `## Ticket` block in the actual PR body.)
 - Base branch: Ask which branch to target (usually `develop` or `main`)
 - **Show PR details for confirmation**:
   ```markdown
@@ -109,7 +115,7 @@ When the user requests to create a PR, follow these steps:
 
 ## Important Notes
 
-- **Jira ticket first**: Always ask for ticket number before creating branch
+- **Jira ticket**: Ask once; if none or not in `PROJECT-123` form, branch name has no ticket segment and PR body has no Ticket section
 - **Pre-flight check**: Verify working directory is clean before branching from base
 - **Detect existing feature branch**: Skip branch creation if already on one
 - **Verify remote exists**: Check `git remote` before pushing
@@ -125,18 +131,18 @@ User: "create branch and commit and push to remote and create pr"
 
 Assistant should:
 1. Check `git status` → verify working tree state
-2. Ask: "What Jira ticket is this for? (e.g., ING-342)"
+2. Ask whether there is a Jira ticket; if yes, ask for the key (e.g. ING-342). If no or skipped, proceed without a ticket segment in the branch name.
 3. Ask: "Type? (feat/fix/docs/refactor/etc.)"
 4. Ask: "Brief description? (e.g., 'add agents to client products')"
-5. Create branch: `feat/ing-342-add-agents-to-client-products`
+5. Create branch: with ticket → `feat/ing-342-add-agents-to-client-products`; without ticket → `feat/add-agents-to-client-products`
 6. Stage files: `git add file1.go file2.go file3_test.go`
 7. Show staged vs unstaged summary
 8. Commit: `feat: add agents to client products`
 9. Verify remote exists and connectivity
 10. Show commit count being pushed
-11. Push: `git push -u origin feat/ing-342-add-agents-to-client-products`
+11. Push: `git push -u origin {the-branch-name-from-step-5}`
 12. Ask: "Draft PR or regular PR? Which base branch? (develop/main)"
-13. Create PR with comprehensive description including ticket reference
+13. Create PR with the template body; include `## Ticket` only if a Jira key was given in step 2
 14. Copy PR URL to clipboard and share with user
 
 ## Error Handling
@@ -149,4 +155,4 @@ Assistant should:
 - **gh CLI not available**: Provide manual PR creation URL from git push output
 - **Uncommitted changes**: Ask user if they want to stash, commit, or discard
 - **On wrong base branch**: Ask user which base branch to use (develop/main)
-- **No ticket number**: Ask user to provide Jira ticket or skip if not applicable
+- **No ticket number**: Use `{type}/{kebab-description}` for the branch and omit `## Ticket` from the PR body
