@@ -40,6 +40,8 @@ let
     unrar
     unzip
     uv
+    zig
+    zls
     zip
     zoxide
   ];
