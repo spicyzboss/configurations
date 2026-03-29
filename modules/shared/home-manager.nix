@@ -131,7 +131,6 @@ in
     enable = true;
     shellAliases = {
       cd = "z";
-      glm = "claude --settings ~/.claude/settings-glm.json";
     };
     shellAbbrs = {
       g = "git";
