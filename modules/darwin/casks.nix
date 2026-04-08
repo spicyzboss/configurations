@@ -22,4 +22,5 @@ _:
   "tradingview"
   "virtualbox"
   "whatsapp"
+  "kicad"
 ]
