@@ -32,8 +32,6 @@ let
     openssh
     pandoc
     ripgrep
-    rustc
-    cargo
     terraform
     tflint
     tree

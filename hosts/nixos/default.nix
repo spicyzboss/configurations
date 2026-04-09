@@ -120,6 +120,14 @@
 
   programs = {
     fish.enable = true;
+    rust = {
+      targets = [
+        "thumbv8m.main-none-eabihf"
+        "aarch64-apple-darwin"
+        "wasm32-unknown-unknown"
+        "thumbv7em-none-eabihf"
+      ];
+    };
     steam = {
       enable = true;
       remotePlay.openFirewall = true;
