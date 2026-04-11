@@ -255,10 +255,18 @@
   };
 
   # Rustup auto-init
-  environment.etc."profile.d/rustup.sh".text = ''
+  environment.sessionVariables = {
+    RUSTUP_HOME = "$HOME/.rustup";
+    CARGO_HOME = "$HOME/.cargo";
+  };
+  environment.etc."cargo/env".text = ''
     export RUSTUP_HOME=$HOME/.rustup
     export CARGO_HOME=$HOME/.cargo
-    export PATH=$CARGO_HOME/bin:$PATH
+  '';
+  programs.fish.shellInit = ''
+    set -gx RUSTUP_HOME $HOME/.rustup
+    set -gx CARGO_HOME $HOME/.cargo
+    fish_add_path $HOME/.cargo/bin
   '';
 
   # Increase inotify watch limit to prevent warnings

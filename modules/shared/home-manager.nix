@@ -165,13 +165,17 @@ in
     };
     interactiveShellInit = ''
       set -gx fish_greeting ""
-      fish_add_path -a $HOME/.local/bin $HOME/.bun/bin $HOME/go/bin $HOME/.pyenv/bin
+      fish_add_path -a $HOME/.local/bin $HOME/.bun/bin $HOME/go/bin $HOME/.pyenv/bin $HOME/.cargo/bin ${pkgs.rustup}/bin
       set -gx BUN_INSTALL $HOME/.bun
       set -gx GOPATH $HOME/go
       set -gx PYENV_ROOT $HOME/.pyenv
       ${lib.optionalString pkgs.stdenv.isDarwin ''eval "$(/opt/homebrew/bin/brew shellenv)"''}
       ${lib.optionalString pkgs.stdenv.isDarwin ''fish_add_path -a /usr/local/texlive/2026/bin/universal-darwin''}
       test -f $HOME/.cargo/env.fish && source $HOME/.cargo/env.fish
+    '';
+    shellHook = ''
+      rustup default 1.94.1 2>/dev/null || true
+      rustup target add thumbv8m.main-none-eabihf thumbv7em-none-eabihf wasm32-unknown-unknown aarch64-apple-darwin 2>/dev/null || true
     '';
   };
 
