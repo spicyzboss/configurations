@@ -120,14 +120,6 @@
 
   programs = {
     fish.enable = true;
-    rust = {
-      targets = [
-        "thumbv8m.main-none-eabihf"
-        "aarch64-apple-darwin"
-        "wasm32-unknown-unknown"
-        "thumbv7em-none-eabihf"
-      ];
-    };
     steam = {
       enable = true;
       remotePlay.openFirewall = true;
@@ -213,6 +205,7 @@
     wl-clipboard
     wayland-utils
     btop
+    rustup
   ];
 
   # Don't require password for users in `wheel` group for these commands
@@ -260,6 +253,13 @@
       experimental-features = nix-command flakes
     '';
   };
+
+  # Rustup auto-init
+  environment.etc."profile.d/rustup.sh".text = ''
+    export RUSTUP_HOME=$HOME/.rustup
+    export CARGO_HOME=$HOME/.cargo
+    export PATH=$CARGO_HOME/bin:$PATH
+  '';
 
   # Increase inotify watch limit to prevent warnings
   boot.kernel.sysctl = {

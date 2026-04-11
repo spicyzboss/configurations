@@ -32,7 +32,6 @@ let
     openssh
     pandoc
     ripgrep
-    cargo
     terraform
     tflint
     tree
