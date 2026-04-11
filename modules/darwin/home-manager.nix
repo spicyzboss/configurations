@@ -57,8 +57,9 @@ in
             PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
           };
           activation.rustupSetup = lib.hm.dag.entryAfter ["writeBoundary"] ''
+            ${pkgs.rustup}/bin/rustup toolchain install 1.94.1 2>/dev/null || true
             ${pkgs.rustup}/bin/rustup default 1.94.1 2>/dev/null || true
-            ${pkgs.rustup}/bin/rustup target add thumbv8m.main-none-eabihf thumbv7em-none-eabihf wasm32-unknown-unknown aarch64-apple-darwin 2>/dev/null || true
+            ${pkgs.rustup}/bin/rustup target add --toolchain 1.94.1 thumbv8m.main-none-eabihf thumbv7em-none-eabihf wasm32-unknown-unknown 2>/dev/null || true
           '';
         };
         programs = {} // import ../shared/home-manager.nix { inherit config pkgs lib; };
