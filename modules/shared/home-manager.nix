@@ -172,8 +172,6 @@ in
       ${lib.optionalString pkgs.stdenv.isDarwin ''eval "$(/opt/homebrew/bin/brew shellenv)"''}
       ${lib.optionalString pkgs.stdenv.isDarwin ''fish_add_path -a /usr/local/texlive/2026/bin/universal-darwin''}
       test -f $HOME/.cargo/env.fish && source $HOME/.cargo/env.fish
-      rustup default 1.94.1 2>/dev/null || true
-      rustup target add thumbv8m.main-none-eabihf thumbv7em-none-eabihf wasm32-unknown-unknown aarch64-apple-darwin 2>/dev/null || true
     '';
   };
 
@@ -189,6 +187,11 @@ in
     enable = true;
     shellWrapperName = "y";
   };
+
+  home.activation.rustupSetup = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    ${pkgs.rustup}/bin/rustup default 1.94.1 2>/dev/null || true
+    ${pkgs.rustup}/bin/rustup target add thumbv8m.main-none-eabihf thumbv7em-none-eabihf wasm32-unknown-unknown aarch64-apple-darwin 2>/dev/null || true
+  '';
 
   starship = {
     enable = true;
