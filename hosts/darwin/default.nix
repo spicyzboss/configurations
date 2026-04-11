@@ -19,7 +19,7 @@ in
       experimental-features = nix-command flakes
     '';
   };
-  environment.systemPackages = (import ../../modules/shared/packages.nix { inherit pkgs; }) ++ [ pkgs.rustup ];
+  environment.systemPackages = import ../../modules/shared/packages.nix { inherit pkgs; };
 
   system = {
     # Turn off NIX_PATH warnings now that we're using flakes
