@@ -55,6 +55,10 @@ in
             PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1";
             PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS = "true";
             PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+            LIBRARY_PATH = "/opt/homebrew/lib";
+            LDFLAGS = "-L/opt/homebrew/lib";
+            CPPFLAGS = "-I/opt/homebrew/include";
+            PKG_CONFIG_PATH = "/opt/homebrew/lib/pkgconfig";
           };
           activation.rustupSetup = lib.hm.dag.entryAfter ["writeBoundary"] ''
             ${pkgs.rustup}/bin/rustup toolchain install 1.94.1 2>/dev/null || true
