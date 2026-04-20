@@ -141,7 +141,8 @@ in
       gb = "git branch";
       gd = "git diff";
       gs = "git status -s";
-      gpl = "git fetch --all --tags && git pull";
+      gpl = "git pull";
+      gpla = "git fetch --all --tags && git pull";
       gph = "git push origin HEAD";
       gphf = "git push origin HEAD --force-with-lease";
       gl = "git log --oneline";
