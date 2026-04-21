@@ -23,4 +23,5 @@ _:
   "virtualbox"
   "whatsapp"
   "kicad"
+  "lm-studio"
 ]
