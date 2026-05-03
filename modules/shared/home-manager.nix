@@ -113,7 +113,6 @@ in
       "kitty_mod+x" = "scroll_to_prompt 1";
       "kitty_mod+h" = "show_scrollback";
       "kitty_mod+g" = "show_last_command_output";
-      "kitty_mod+enter" = "new_window";
       "cmd+enter" = "new_window";
       "kitty_mod+enter" = "new_window_with_cwd";
       "kitty_mod+]" = "next_window";
