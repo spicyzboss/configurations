@@ -120,7 +120,7 @@ in
       "kitty_mod+f" = "move_window_forward";
       "kitty_mod+b" = "move_window_backward";
       "kitty_mod+d" = "detach_tab ask";
-      "kitty_mod+t" = "new_tab_with_cwd";
+      "kitty_mod+t" = "launch --cwd=current --type=tab --location=neighbor";
       "ctrl+alt+t" = "goto_layout tall";
       "ctrl+alt+s" = "goto_layout stack";
     };
