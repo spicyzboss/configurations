@@ -42,6 +42,7 @@ let
     zls
     zip
     zoxide
+    kubectl
   ];
   filteredPackages = basePackages
     ++ lib.optionals (!pkgs.stdenv.isDarwin) linuxOnlyPackages
