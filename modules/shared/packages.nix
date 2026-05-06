@@ -27,7 +27,7 @@ let
     jq
     kitty
     myPython
-    neofetch
+    fastfetch
     nodejs_22
     openssh
     pandoc
