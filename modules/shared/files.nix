@@ -31,4 +31,11 @@ in
     source = ./commands;
     force = true;
   };
+
+  ".config/yazi/yazi.toml" = {
+    text = ''
+      [mgr]
+      show_hidden = true
+    '';
+  };
 }
