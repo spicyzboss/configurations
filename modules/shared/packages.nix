@@ -43,7 +43,7 @@ let
     zip
     zoxide
     kubectl
-    helm
+    kubernetes-helm
   ];
   filteredPackages = basePackages
     ++ lib.optionals (!pkgs.stdenv.isDarwin) linuxOnlyPackages
