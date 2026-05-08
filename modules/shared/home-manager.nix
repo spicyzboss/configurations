@@ -163,6 +163,7 @@ in
       c = "claude";
       zz = "yazi";
       lg = "lazygit";
+      k = "kubectl";
     };
     interactiveShellInit = ''
       set -gx fish_greeting ""
