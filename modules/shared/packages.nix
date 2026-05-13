@@ -26,7 +26,6 @@ let
     jdk21
     jq
     kitty
-    libpq
     myPython
     fastfetch
     nodejs_22

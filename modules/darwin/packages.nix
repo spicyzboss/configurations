@@ -7,6 +7,7 @@ shared-packages ++ [
   colima
   docker
   docker-compose
+  libpq
   libiconv
   rustup
 ]
