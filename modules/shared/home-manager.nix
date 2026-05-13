@@ -179,7 +179,12 @@ in
 
   bat.enable = true;
 
-  btop.enable = true;
+  btop = {
+    enable = true;
+    settings = {
+      update_ms = 500;
+    };
+  };
 
   fzf.enable = true;
 
