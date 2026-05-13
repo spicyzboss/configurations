@@ -31,6 +31,7 @@ let
     nodejs_22
     openssh
     pandoc
+    postgresql
     ripgrep
     terraform
     tflint
