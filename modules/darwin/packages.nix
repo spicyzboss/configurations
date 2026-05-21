@@ -8,5 +8,6 @@ shared-packages ++ [
   docker
   docker-compose
   libiconv
+  obsidian
   rustup
 ]
