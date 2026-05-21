@@ -13,6 +13,7 @@ _:
   "logi-options+"
   "mactex-no-gui"
   "notion"
+  "obsidian"
   "openvpn-connect"
   "postman"
   "raycast"

@@ -14,6 +14,7 @@ shared-packages ++ [
   docker-compose
   ninja
   notion-app
+  obsidian
   chromium
   discord
   xclip
