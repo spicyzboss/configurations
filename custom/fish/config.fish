@@ -12,6 +12,8 @@ if status is-interactive
         fish_config theme choose catppuccin-mocha >/dev/null 2>/dev/null
     end
 
+    alias ls eza
+
     abbr --add -- c claude
     abbr --add -- d docker
     abbr --add -- dcp docker-compose
@@ -42,6 +44,7 @@ if status is-interactive
     abbr --add -- gstp 'git stash pop'
     abbr --add -- k kubectl
     abbr --add -- lg lazygit
+    abbr --add -- lsa 'ls -la'
     abbr --add -- zz yazi
 
     alias cd z

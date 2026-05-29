@@ -13,6 +13,7 @@ let
     coreutils
     delta
     dust
+    eza
     fd
     ffmpeg
     fish

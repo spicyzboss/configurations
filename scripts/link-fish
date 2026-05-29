@@ -34,9 +34,12 @@ SCRIPT_DIR="$(CDPATH= cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(CDPATH= cd "$SCRIPT_DIR/.." && pwd)"
 SOURCE_DIR="$REPO_ROOT/custom/fish"
 TARGET_DIR="$HOME/.config/fish"
+THEME_NAME="catppuccin-mocha"
+THEME_FILE="$SOURCE_DIR/themes/$THEME_NAME.theme"
 TIMESTAMP="$(date '+%Y%m%d%H%M%S')"
 
 [ -d "$SOURCE_DIR" ] || die "Missing Fish config: $SOURCE_DIR"
+[ -f "$THEME_FILE" ] || die "Missing Fish theme: $THEME_FILE"
 
 mkdir -p "$TARGET_DIR"
 
@@ -66,5 +69,12 @@ link_path "$SOURCE_DIR/config.fish" "$TARGET_DIR/config.fish"
 link_path "$SOURCE_DIR/functions" "$TARGET_DIR/functions"
 link_path "$SOURCE_DIR/completions" "$TARGET_DIR/completions"
 link_path "$SOURCE_DIR/themes" "$TARGET_DIR/themes"
+
+if command -v fish >/dev/null 2>&1; then
+  fish -c "fish_config theme choose $THEME_NAME" >/dev/null 2>/dev/null || die "Failed to apply Fish theme: $THEME_NAME"
+  printf '%s\n' "Applied Fish theme: $THEME_NAME"
+else
+  printf '%s\n' "Fish is not installed yet; theme will apply when Fish is available."
+fi
 
 printf '%s\n' "Fish config linked."
