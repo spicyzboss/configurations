@@ -127,57 +127,6 @@ in
     shellIntegration.mode = "no-cursor";
   };
 
-  fish = {
-    enable = true;
-    shellAliases = {
-      cd = "z";
-    };
-    shellAbbrs = {
-      g = "git";
-      ga = "git add";
-      gc = "git commit -m";
-      gch = "git checkout";
-      gco = "git branch | fzf | xargs git checkout";
-      gb = "git branch";
-      gd = "git diff";
-      gs = "git status -s";
-      gpl = "git pull";
-      gpla = "git fetch --all --tags && git pull";
-      gph = "git push origin HEAD";
-      gphf = "git push origin HEAD --force-with-lease";
-      gl = "git log --oneline";
-      gst = "git stash -u";
-      gstp = "git stash pop";
-      grs = "git reset --hard";
-      grr = "git reset HEAD~1";
-      grm = "git remote";
-      grml = "git remote -v";
-      grma = "git remote add origin";
-      grmr = "git remote remove origin";
-      d = "docker";
-      dps = "docker ps";
-      dpsa = "docker ps -a";
-      dcp = "docker-compose";
-      dcpu = "docker-compose up -d";
-      dcpd = "docker-compose down";
-      c = "claude";
-      zz = "yazi";
-      lg = "lazygit";
-      k = "kubectl";
-    };
-    interactiveShellInit = ''
-      set -gx fish_greeting ""
-      fish_add_path -a $HOME/.local/bin $HOME/.bun/bin $HOME/go/bin $HOME/.pyenv/bin $HOME/.cargo/bin ${pkgs.rustup}/bin
-      set -gx BUN_INSTALL $HOME/.bun
-      set -gx GOPATH $HOME/go
-      set -gx PYENV_ROOT $HOME/.pyenv
-      ${lib.optionalString pkgs.stdenv.isDarwin ''eval "$(/opt/homebrew/bin/brew shellenv)"''}
-      ${lib.optionalString pkgs.stdenv.isDarwin ''fish_add_path -a /opt/homebrew/opt/libpq/bin''}
-      ${lib.optionalString pkgs.stdenv.isDarwin ''fish_add_path -a /usr/local/texlive/2026/bin/universal-darwin''}
-      test -f $HOME/.cargo/env.fish && source $HOME/.cargo/env.fish
-    '';
-  };
-
   bat.enable = true;
 
   btop = {
@@ -187,22 +136,26 @@ in
     };
   };
 
-  fzf.enable = true;
+  fzf = {
+    enable = true;
+    enableFishIntegration = false;
+  };
 
   lazygit.enable = true;
 
   yazi = {
     enable = true;
+    enableFishIntegration = false;
     shellWrapperName = "y";
   };
 
   starship = {
     enable = true;
-    enableFishIntegration = true;
+    enableFishIntegration = false;
   };
 
   zoxide = {
     enable = true;
-    enableFishIntegration = true;
+    enableFishIntegration = false;
   };
 }

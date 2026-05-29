@@ -8,6 +8,7 @@ macOS and NixOS configuration with [nix-darwin](https://github.com/LnL7/nix-darw
 - [NixOS Setup (x86_64)](#nixos-setup-x86_64)
 - [Customization](#customization)
 - [Claude Config](#claude-config)
+- [Fish Config](#fish-config)
 - [Commands](#commands)
 - [Structure](#structure)
 
@@ -167,6 +168,29 @@ The link command creates symlinks into `~/.claude`. If a non-symlink file alread
 
 ```bash
 ./scripts/link-claude --force
+```
+
+---
+
+## Fish Config
+
+Fish is installed by Nix, while user Fish files are tracked in this repo as shared custom config and not linked by Home Manager. Link it after applying the Nix config:
+
+```bash
+./scripts/link-fish
+```
+
+Tracked files live under `custom/fish/`:
+
+- `config.fish`
+- `functions/`
+- `completions/`
+- `themes/`
+
+The link command creates symlinks into `~/.config/fish` and leaves mutable Fish state like `fish_variables` alone. If a non-symlink file or directory already exists, it refuses to replace it. Use `--force` to move the existing path aside with a timestamped `.bak` suffix.
+
+```bash
+./scripts/link-fish --force
 ```
 
 ---

@@ -15,6 +15,7 @@ let
     dust
     fd
     ffmpeg
+    fish
     go
     gcc
     gh

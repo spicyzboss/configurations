@@ -263,12 +263,6 @@
     export RUSTUP_HOME=$HOME/.rustup
     export CARGO_HOME=$HOME/.cargo
   '';
-  programs.fish.shellInit = ''
-    set -gx RUSTUP_HOME $HOME/.rustup
-    set -gx CARGO_HOME $HOME/.cargo
-    fish_add_path $HOME/.cargo/bin
-  '';
-
   # Increase inotify watch limit to prevent warnings
   boot.kernel.sysctl = {
     "fs.inotify.max_user_watches" = 1048576;
