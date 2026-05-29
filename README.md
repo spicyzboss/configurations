@@ -154,13 +154,7 @@ The config uses username `spicyz`. For a different user:
 Claude config is tracked in this repo as a shared custom config for macOS and Linux, but it is not linked by Home Manager. Link it after applying the Nix config:
 
 ```bash
-nix run .#apps.aarch64-darwin.link-claude
-```
-
-On NixOS:
-
-```bash
-nix run .#apps.x86_64-linux.link-claude
+./scripts/link-claude
 ```
 
 Tracked files live under `custom/claude/`:
@@ -170,6 +164,10 @@ Tracked files live under `custom/claude/`:
 - `hooks/` when needed
 
 The link command creates symlinks into `~/.claude`. If a non-symlink file already exists, it refuses to replace it. Use `--force` to move the existing file or directory aside with a timestamped `.bak` suffix.
+
+```bash
+./scripts/link-claude --force
+```
 
 ---
 
@@ -183,7 +181,6 @@ If flakes are not in nix.conf, prefix with `nix --extra-experimental-features 'n
 | --------------------------------------- | ------------------- |
 | `nix run .#apps.aarch64-darwin.build-switch` | Apply config changes |
 | `nix run .#apps.aarch64-darwin.build` | Build only (no switch) |
-| `nix run .#apps.aarch64-darwin.link-claude` | Link repo-tracked Claude config |
 | `nix run .#apps.aarch64-darwin.rollback` | Revert to previous config |
 
 ### NixOS
@@ -191,7 +188,6 @@ If flakes are not in nix.conf, prefix with `nix --extra-experimental-features 'n
 | Command | Description |
 | --------------------------------------- | ------------------- |
 | `nix run .#apps.x86_64-linux.build-switch` | Apply config changes |
-| `nix run .#apps.x86_64-linux.link-claude` | Link repo-tracked Claude config |
 
 ### Both
 
