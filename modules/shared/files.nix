@@ -27,11 +27,6 @@ in
     '';
   };
 
-  ".claude/commands" = {
-    source = ./commands;
-    force = true;
-  };
-
   ".config/yazi/yazi.toml" = {
     text = ''
       [mgr]

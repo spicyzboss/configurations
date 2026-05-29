@@ -47,11 +47,21 @@
           exec ${self}/apps/${system}/${scriptName} "$@"
         '')}/bin/${scriptName}";
       };
+      mkLinkClaudeApp = system: {
+        type = "app";
+        program = "${(nixpkgs.legacyPackages.${system}.writeScriptBin "link-claude" ''
+          #!/usr/bin/env bash
+          PATH=${nixpkgs.legacyPackages.${system}.git}/bin:$PATH
+          echo "Running link-claude for ${system}"
+          exec ./scripts/link-claude "$@"
+        '')}/bin/link-claude";
+      };
       mkLinuxApps = system: {
         "apply" = mkApp "apply" system;
         "build-switch" = mkApp "build-switch" system;
         "clean" = mkApp "clean" system;
         "copy-keys" = mkApp "copy-keys" system;
+        "link-claude" = mkLinkClaudeApp system;
         "install" = mkApp "install" system;
       };
       mkDarwinApps = system: {
@@ -60,6 +70,7 @@
         "build-switch" = mkApp "build-switch" system;
         "clean" = mkApp "clean" system;
         "copy-keys" = mkApp "copy-keys" system;
+        "link-claude" = mkLinkClaudeApp system;
         "rollback" = mkApp "rollback" system;
       };
     in

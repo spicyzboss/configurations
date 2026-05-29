@@ -1,0 +1,70 @@
+#!/bin/sh
+set -eu
+
+usage() {
+  printf '%s\n' "Usage: $0 [--force]"
+  printf '%s\n' "Links repo-tracked Claude config into ~/.claude."
+}
+
+die() {
+  printf '%s\n' "$1" >&2
+  exit 1
+}
+
+FORCE=0
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --force|-f)
+      FORCE=1
+      ;;
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    *)
+      usage >&2
+      die "Unknown argument: $1"
+      ;;
+  esac
+  shift
+done
+
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+SOURCE_DIR="$REPO_ROOT/custom/claude"
+TIMESTAMP="$(date '+%Y%m%d%H%M%S')"
+
+[ -d "$SOURCE_DIR" ] || die "Missing Claude config: $SOURCE_DIR"
+
+mkdir -p "$HOME/.claude"
+
+link_path() {
+  src="$1"
+  dest="$2"
+
+  [ -e "$src" ] || die "Missing source: $src"
+
+  if [ -L "$dest" ]; then
+    rm "$dest"
+  elif [ -e "$dest" ]; then
+    if [ "$FORCE" -ne 1 ]; then
+      die "Refusing to replace non-symlink: $dest. Re-run with --force to move it aside."
+    fi
+
+    backup="$dest.bak.$TIMESTAMP"
+    mv "$dest" "$backup"
+    printf '%s\n' "Moved $dest to $backup"
+  fi
+
+  ln -s "$src" "$dest"
+  printf '%s\n' "Linked $dest -> $src"
+}
+
+link_path "$SOURCE_DIR/settings.json" "$HOME/.claude/settings.json"
+link_path "$SOURCE_DIR/commands" "$HOME/.claude/commands"
+
+if [ -d "$SOURCE_DIR/hooks" ]; then
+  link_path "$SOURCE_DIR/hooks" "$HOME/.claude/hooks"
+fi
+
+printf '%s\n' "Claude config linked."

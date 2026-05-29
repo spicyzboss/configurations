@@ -7,6 +7,7 @@ macOS and NixOS configuration with [nix-darwin](https://github.com/LnL7/nix-darw
 - [Fresh Mac Setup (Apple Silicon)](#fresh-mac-setup-apple-silicon)
 - [NixOS Setup (x86_64)](#nixos-setup-x86_64)
 - [Customization](#customization)
+- [Claude Config](#claude-config)
 - [Commands](#commands)
 - [Structure](#structure)
 
@@ -148,6 +149,30 @@ The config uses username `spicyz`. For a different user:
 
 ---
 
+## Claude Config
+
+Claude config is tracked in this repo as a shared custom config for macOS and Linux, but it is not linked by Home Manager. Link it after applying the Nix config:
+
+```bash
+nix run .#apps.aarch64-darwin.link-claude
+```
+
+On NixOS:
+
+```bash
+nix run .#apps.x86_64-linux.link-claude
+```
+
+Tracked files live under `custom/claude/`:
+
+- `settings.json`
+- `commands/`
+- `hooks/` when needed
+
+The link command creates symlinks into `~/.claude`. If a non-symlink file already exists, it refuses to replace it. Use `--force` to move the existing file or directory aside with a timestamped `.bak` suffix.
+
+---
+
 ## Commands
 
 If flakes are not in nix.conf, prefix with `nix --extra-experimental-features 'nix-command flakes' run` instead of `nix run`.
@@ -158,6 +183,7 @@ If flakes are not in nix.conf, prefix with `nix --extra-experimental-features 'n
 | --------------------------------------- | ------------------- |
 | `nix run .#apps.aarch64-darwin.build-switch` | Apply config changes |
 | `nix run .#apps.aarch64-darwin.build` | Build only (no switch) |
+| `nix run .#apps.aarch64-darwin.link-claude` | Link repo-tracked Claude config |
 | `nix run .#apps.aarch64-darwin.rollback` | Revert to previous config |
 
 ### NixOS
@@ -165,6 +191,7 @@ If flakes are not in nix.conf, prefix with `nix --extra-experimental-features 'n
 | Command | Description |
 | --------------------------------------- | ------------------- |
 | `nix run .#apps.x86_64-linux.build-switch` | Apply config changes |
+| `nix run .#apps.x86_64-linux.link-claude` | Link repo-tracked Claude config |
 
 ### Both
 
@@ -179,6 +206,7 @@ If flakes are not in nix.conf, prefix with `nix --extra-experimental-features 'n
 ```text
 hosts/darwin/     macOS system config
 hosts/nixos/      NixOS system config
+custom/           Repo-tracked configs not linked by Home Manager
 modules/darwin/   Darwin modules (casks, dock)
 modules/nixos/    NixOS modules (KDE, packages)
 modules/shared/   Shared config (git, ssh, helix, kitty, fish)
