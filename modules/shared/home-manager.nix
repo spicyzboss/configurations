@@ -65,11 +65,14 @@ in
         hashKnownHosts = true;
       };
       "github.com" = {
+        user = "git";
+        identitiesOnly = true;
         identityFile = [ (sshPath "spicyzboss") ];
       };
       "github.100x" = {
         hostname = "github.com";
         user = "git";
+        identitiesOnly = true;
         identityFile = [ (sshPath "boss-spicyz100x") ];
       };
     };
