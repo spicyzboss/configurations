@@ -2,7 +2,6 @@
 
 let
   user        = "spicyz";
-  sharedFiles = import ../shared/files.nix { inherit config pkgs; };
 in
 {
   imports = [
@@ -40,12 +39,15 @@ in
   home-manager = {
     useGlobalPkgs = true;
     users.${user} = { pkgs, config, lib, ... }:
+      let
+        sharedHome = import ../shared/files.nix { inherit config pkgs lib; };
+      in
       {
         imports = [ catppuccin.homeModules.catppuccin ];
         home = {
           enableNixpkgsReleaseCheck = false;
           packages = pkgs.callPackage ./packages.nix {};
-          file = sharedFiles;
+          file = sharedHome.files;
           stateVersion = "25.11";
           sessionVariables = {
             EDITOR = "hx";
@@ -60,11 +62,13 @@ in
             CPPFLAGS = "-I/opt/homebrew/include";
             PKG_CONFIG_PATH = "/opt/homebrew/lib/pkgconfig";
           };
-          activation.rustupSetup = lib.hm.dag.entryAfter ["writeBoundary"] ''
-            ${pkgs.rustup}/bin/rustup toolchain install 1.94.1 2>/dev/null || true
-            ${pkgs.rustup}/bin/rustup default 1.94.1 2>/dev/null || true
-            ${pkgs.rustup}/bin/rustup target add --toolchain 1.94.1 thumbv8m.main-none-eabihf thumbv7em-none-eabihf wasm32-unknown-unknown 2>/dev/null || true
-          '';
+          activation = sharedHome.activation // {
+            rustupSetup = lib.hm.dag.entryAfter ["writeBoundary"] ''
+              ${pkgs.rustup}/bin/rustup toolchain install 1.94.1 2>/dev/null || true
+              ${pkgs.rustup}/bin/rustup default 1.94.1 2>/dev/null || true
+              ${pkgs.rustup}/bin/rustup target add --toolchain 1.94.1 thumbv8m.main-none-eabihf thumbv7em-none-eabihf wasm32-unknown-unknown 2>/dev/null || true
+            '';
+          };
         };
         programs = {} // import ../shared/home-manager.nix { inherit config pkgs lib; };
         launchd.agents.colima = {

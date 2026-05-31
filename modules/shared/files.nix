@@ -1,36 +1,42 @@
-{ pkgs, config, ... }:
+{ pkgs, config, lib, ... }:
 
 let
-  personalPublicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICeyy6f27Lzkile5KU4Mu6ZX2YPp9FHPDxI7WexvJwl+";
-  work100xPublicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOUFapELtvauLRoMSO59nuKFrfpIES3I8nh/F0vZepVQ";
+  sshDir = "${config.home.homeDirectory}/.ssh";
+  keyNames = [ "spicyzboss" "boss-spicyz100x" ];
+  generateKey = name: ''
+    key_path="${sshDir}/${name}"
+
+    if [ ! -e "$key_path" ]; then
+      rm -f "$key_path.pub"
+      ${pkgs.openssh}/bin/ssh-keygen -q -t ed25519 -N "" -C "${name}" -f "$key_path"
+    elif [ ! -e "$key_path.pub" ]; then
+      ${pkgs.openssh}/bin/ssh-keygen -y -f "$key_path" > "$key_path.pub"
+    fi
+
+    chmod 600 "$key_path" 2>/dev/null || true
+    chmod 644 "$key_path.pub" 2>/dev/null || true
+  '';
 in
-
 {
-  ".ssh/spicyzboss.pub" = {
-    text = personalPublicKey;
-  };
-  ".ssh/boss-spicyz100x.pub" = {
-    text = work100xPublicKey;
-  };
-  ".hushlogin" = {
-    text = "";
-  };
-  ".config/1Password/ssh/agent.toml" = {
-    text = ''
-      [[ssh-keys]]
-      vault = "Private"
-      item = "spicyzboss"
+  activation = {
+    generateGitSshKeys = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      umask 077
+      mkdir -p "${sshDir}"
+      chmod 700 "${sshDir}" 2>/dev/null || true
 
-      [[ssh-keys]]
-      vault = "100x"
-      item = "boss-spicyz100x"
+      ${lib.concatMapStringsSep "\n" generateKey keyNames}
     '';
   };
 
-  ".config/yazi/yazi.toml" = {
-    text = ''
-      [mgr]
-      show_hidden = true
-    '';
+  files = {
+    ".hushlogin" = {
+      text = "";
+    };
+    ".config/yazi/yazi.toml" = {
+      text = ''
+        [mgr]
+        show_hidden = true
+      '';
+    };
   };
 }

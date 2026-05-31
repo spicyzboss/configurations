@@ -4,7 +4,7 @@ let
   user = "spicyz";
   xdg_configHome  = "/home/${user}/.config";
   shared-programs = import ../shared/home-manager.nix { inherit config pkgs lib; };
-  shared-files = import ../shared/files.nix { inherit config pkgs; };
+  shared-home = import ../shared/files.nix { inherit config pkgs lib; };
   kde-config = import ./kde-config.nix;
 in
 {
@@ -26,7 +26,7 @@ in
     username = "${user}";
     homeDirectory = "/home/${user}";
     packages = pkgs.callPackage ./packages.nix { inherit inputs config; };
-    file = shared-files // import ./files.nix { inherit user pkgs; };
+    file = shared-home.files // import ./files.nix { inherit user pkgs; };
     stateVersion = "25.11";
     sessionVariables = {
       EDITOR = "hx";
@@ -36,6 +36,7 @@ in
       PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS = "true";
       PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH = "${pkgs.chromium}/bin/chromium";
     };
+    activation = shared-home.activation;
   };
 
   programs = shared-programs // { 

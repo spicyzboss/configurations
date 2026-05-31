@@ -1,13 +1,8 @@
 { config, pkgs, lib, ... }:
 
-let name = "spicyz";
-    user = "spicyz";
-    email = "spicyz@local";
-    onePasswordSigner = if pkgs.stdenv.isDarwin then "/Applications/1Password.app/Contents/MacOS/op-ssh-sign" else "/opt/1Password/op-ssh-sign";
-    sshAgentSocket = if pkgs.stdenv.isDarwin then "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock" else "~/.1password/agent.sock";
-    personalPublicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICeyy6f27Lzkile5KU4Mu6ZX2YPp9FHPDxI7WexvJwl+";
-    work100xPublicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOUFapELtvauLRoMSO59nuKFrfpIES3I8nh/F0vZepVQ";
-    sshPubPath = path: if pkgs.stdenv.isDarwin then "/Users/${user}/.ssh/${path}" else "/home/${user}/.ssh/${path}";
+let
+  user = "spicyz";
+  sshPath = path: "${config.home.homeDirectory}/.ssh/${path}";
 in
 {
   git = {
@@ -21,7 +16,7 @@ in
           user = {
             name = "boss-spicyz100x";
             email = "boss.spicyz@100x.fi";
-            signingkey = work100xPublicKey;
+            signingkey = sshPath "boss-spicyz100x";
           };
         };
       }
@@ -30,7 +25,7 @@ in
       user = {
         name = "spicyzboss";
         email = "supachai@spicyz.io";
-        signingkey = personalPublicKey;
+        signingkey = sshPath "spicyzboss";
       };
       init.defaultBranch = "main";
       core = {
@@ -52,7 +47,6 @@ in
       commit.gpgsign = true;
       gpg = {
         format = "ssh";
-        ssh.program = onePasswordSigner;
       };
       pull.rebase = true;
       rebase.autoStash = true;
@@ -74,15 +68,14 @@ in
       "*" = {
         sendEnv = [ "LANG" "LC_*" ];
         hashKnownHosts = true;
-        extraOptions = { IdentityAgent = "\"${sshAgentSocket}\""; };
       };
       "github.com" = {
-        identityFile = [ (sshPubPath "spicyzboss.pub") ];
+        identityFile = [ (sshPath "spicyzboss") ];
       };
       "github.100x" = {
         hostname = "github.com";
         user = "git";
-        identityFile = [ (sshPubPath "boss-spicyz100x.pub") ];
+        identityFile = [ (sshPath "boss-spicyz100x") ];
       };
     };
   };

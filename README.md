@@ -82,9 +82,7 @@ Enter your Mac password when asked. This step will:
 
 ### Step 6: Finish setup
 
-1. **1Password** — Open 1Password, sign in, then in **Settings → Developer** enable:
-   - **Use the SSH Agent** — Git signing and SSH use 1Password
-   - **Integrate with 1Password CLI** — For `op` commands (e.g. `op inject`). Quick open: `open "onepassword://settings/developers"`
+1. **SSH keys** — Home Manager generates `~/.ssh/spicyzboss` and `~/.ssh/boss-spicyz100x` on first switch if they do not exist. Add the matching `.pub` files to the matching GitHub accounts as SSH authentication and signing keys.
 
 2. **Use SSH for git** (optional) — `git remote set-url origin git@github.com:spicyzboss/configurations.git`
 
@@ -135,7 +133,7 @@ Enter your password when asked. This will:
 
 ### Step 4: Finish setup
 
-1. **1Password** — Install and sign in. Git signing uses 1Password SSH agent.
+1. **SSH keys** — Home Manager generates `~/.ssh/spicyzboss` and `~/.ssh/boss-spicyz100x` on first switch if they do not exist. Add the matching `.pub` files to the matching GitHub accounts as SSH authentication and signing keys.
 
 2. **Use SSH for git** (optional) — `git remote set-url origin git@github.com:spicyzboss/configurations.git`
 
