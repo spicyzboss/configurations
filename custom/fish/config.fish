@@ -1,11 +1,38 @@
 # Repo-tracked Fish config. Link with ./scripts/link-fish.
 
-for hm_session_vars in $HOME/.nix-profile/etc/profile.d/hm-session-vars.fish $HOME/.local/state/nix/profile/etc/profile.d/hm-session-vars.fish /etc/profiles/per-user/$USER/etc/profile.d/hm-session-vars.fish
-    if test -f $hm_session_vars
-        source $hm_session_vars
-        break
+function __source_hm_session_vars
+    for hm_session_vars in $HOME/.nix-profile/etc/profile.d/hm-session-vars.fish $HOME/.local/state/nix/profile/etc/profile.d/hm-session-vars.fish /etc/profiles/per-user/$USER/etc/profile.d/hm-session-vars.fish
+        if test -f $hm_session_vars
+            source $hm_session_vars
+            return
+        end
+    end
+
+    for hm_session_vars in $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh $HOME/.local/state/nix/profile/etc/profile.d/hm-session-vars.sh /etc/profiles/per-user/$USER/etc/profile.d/hm-session-vars.sh
+        if not test -f $hm_session_vars
+            continue
+        end
+
+        set -l names
+        for line in (string match -r '^export [A-Za-z_][A-Za-z0-9_]*=' <$hm_session_vars)
+            set -a names (string replace -r '^export ([A-Za-z_][A-Za-z0-9_]*).*' '$1' -- $line)
+        end
+
+        if test (count $names) -eq 0
+            return
+        end
+
+        for line in (command env -i HOME="$HOME" USER="$USER" TERM="$TERM" PATH="$PATH" /bin/sh -c '. "$1"; shift; for name do eval "value=\${$name-}"; printf "%s=%s\n" "$name" "$value"; done' sh $hm_session_vars $names)
+            set -l parts (string split -m 1 = -- $line)
+            set -gx $parts[1] "$parts[2]"
+        end
+
+        return
     end
 end
+
+__source_hm_session_vars
+functions -e __source_hm_session_vars
 
 if status is-interactive
     if test -f $HOME/.config/fish/themes/catppuccin-mocha.theme
