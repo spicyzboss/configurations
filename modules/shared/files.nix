@@ -2,6 +2,7 @@
 
 let
   sshDir = "${config.home.homeDirectory}/.ssh";
+  sshPath = path: "${sshDir}/${path}";
   keyNames = [ "spicyzboss" "boss-spicyz100x" ];
   generateKey = name: ''
     key_path="${sshDir}/${name}"
@@ -36,6 +37,14 @@ in
       text = ''
         [mgr]
         show_hidden = true
+      '';
+    };
+    ".config/git/100x.gitconfig" = {
+      text = ''
+        [user]
+          email = "boss.spicyz@100x.fi"
+          name = "boss-spicyz100x"
+          signingkey = "${sshPath "boss-spicyz100x"}"
       '';
     };
   };

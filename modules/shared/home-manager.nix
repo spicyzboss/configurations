@@ -3,6 +3,7 @@
 let
   user = "spicyz";
   sshPath = path: "${config.home.homeDirectory}/.ssh/${path}";
+  work100xGitConfig = "${config.xdg.configHome}/git/100x.gitconfig";
 in
 {
   git = {
@@ -12,13 +13,7 @@ in
     includes = [
       {
         condition = "gitdir:~/Documents/work/100x/";
-        contents = {
-          user = {
-            name = "boss-spicyz100x";
-            email = "boss.spicyz@100x.fi";
-            signingkey = sshPath "boss-spicyz100x";
-          };
-        };
+        path = work100xGitConfig;
       }
     ];
     settings = {
