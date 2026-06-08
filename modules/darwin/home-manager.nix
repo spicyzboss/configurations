@@ -100,7 +100,7 @@ in
     entries  = [
       { path = "/Applications/Google Chrome.app"; }
       { path = "/System/Applications/Apps.app"; }
-      { path = "/Applications/kitty.app"; }
+      { path = "/Applications/Nix Apps/kitty.app"; }
       { path = "/Applications/Slack.app"; }
       { path = "/Applications/Claude.app"; }
       { path = "/System/Applications/Calendar.app"; }
