@@ -47,11 +47,18 @@
     "defaultMode": "bypassPermissions"
   },
   "model": "opus[1m]",
+  "statusLine": {
+    "type": "command",
+    "command": "ccstatusline",
+    "padding": 0,
+    "refreshInterval": 1
+  },
   "enabledPlugins": {
     "typescript-lsp@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true,
     "rust-analyzer-lsp@claude-plugins-official": true,
-    "chrome-devtools-mcp@chrome-devtools-plugins": true
+    "chrome-devtools-mcp@chrome-devtools-plugins": true,
+    "frontend-design@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "chrome-devtools-plugins": {
@@ -63,10 +70,6 @@
   },
   "alwaysThinkingEnabled": true,
   "skipDangerousModePermissionPrompt": true,
-  "statusLine": {
-    "type": "command",
-    "command": "ccstatusline",
-    "padding": 0,
-    "refreshInterval": 1
-  }
+  "skipWorkflowUsageWarning": true,
+  "agentPushNotifEnabled": true
 }

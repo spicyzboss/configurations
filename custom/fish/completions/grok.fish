@@ -1,6 +1,6 @@
 # Print an optspec for argparse to handle cmd's options that are independent of any subcommand.
 function __fish_grok_global_optspecs
-	string join \n v/version cwd= always-approve allow= deny= p/single= prompt-json= prompt-file= verbatim output-format= m/model= reasoning-effort= rules= system-prompt-override= r/resume= load= c/continue s/session-id= w/worktree= restore-code no-plan no-subagents no-ask-user experimental-memory no-memory agent= agents= tools= disallowed-tools= effort= max-turns= permission-mode= disable-web-search check best-of-n= sandbox= storage-mode= client-identifier= hunk-tracker-mode= terminal fs-read fs-write no-auto-update todo-gate installer= no-alt-screen log-sampling force-login oauth leader no-leader hub-url= hub-workspace-mode= h/help
+	string join \n v/version cwd= leader-socket= always-approve allow= deny= p/single= prompt-json= prompt-file= verbatim output-format= m/model= reasoning-effort= rules= compaction-mode= compaction-detail= system-prompt-override= r/resume= load= c/continue s/session-id= w/worktree= restore-code no-plan no-subagents no-ask-user experimental-memory no-memory agent= agents= tools= disallowed-tools= effort= max-turns= permission-mode= disable-web-search check best-of-n= sandbox= storage-mode= client-identifier= hunk-tracker-mode= terminal fs-read fs-write no-auto-update todo-gate installer= no-alt-screen log-sampling force-login oauth leader no-leader hub-url= hub-workspace-mode= h/help
 end
 
 function __fish_grok_needs_command
@@ -25,6 +25,7 @@ function __fish_grok_using_subcommand
 end
 
 complete -c grok -n "__fish_grok_needs_command" -l cwd -d 'Working directory' -r -F
+complete -c grok -n "__fish_grok_needs_command" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_needs_command" -l allow -d 'Permission allow rule (Claude Code: --allowedTools)' -r
 complete -c grok -n "__fish_grok_needs_command" -l deny -d 'Permission deny rule (Claude Code: --disallowedTools)' -r
 complete -c grok -n "__fish_grok_needs_command" -s p -l single -d 'Single-turn prompt. Prints the response to stdout and exits' -r
@@ -36,6 +37,8 @@ streaming-json\t''"
 complete -c grok -n "__fish_grok_needs_command" -s m -l model -d 'Model ID to use' -r
 complete -c grok -n "__fish_grok_needs_command" -l reasoning-effort -d 'Reasoning effort for reasoning models' -r
 complete -c grok -n "__fish_grok_needs_command" -l rules -d 'Extra rules to append to the system prompt' -r
+complete -c grok -n "__fish_grok_needs_command" -l compaction-mode -d 'Compaction mode [summary|transcript|segments]: `summary` (default) adds no pointer; `transcript` points at the raw transcript; `segments` persists per-segment markdown to grep. Sets `GROK_COMPACTION_MODE`' -r
+complete -c grok -n "__fish_grok_needs_command" -l compaction-detail -d 'Segments verbatim detail [none|minimal|balanced|verbose] (default `verbose`). Only affects `--compaction-mode segments`. Sets `GROK_COMPACTION_DETAIL`' -r
 complete -c grok -n "__fish_grok_needs_command" -l system-prompt-override -d 'Override the agent\'s system prompt (Claude Code: --system-prompt)' -r
 complete -c grok -n "__fish_grok_needs_command" -s r -l resume -d 'Resume a session by ID, or the most recent if omitted' -r
 complete -c grok -n "__fish_grok_needs_command" -l load -d 'Resume a previous session by session ID (alias for --resume)' -r
@@ -118,54 +121,66 @@ complete -c grok -n "__fish_grok_using_subcommand agent; and not __fish_seen_sub
 complete -c grok -n "__fish_grok_using_subcommand agent; and not __fish_seen_subcommand_from stdio headless serve leader help" -l grok-ws-url -r
 complete -c grok -n "__fish_grok_using_subcommand agent; and not __fish_seen_subcommand_from stdio headless serve leader help" -l cli-chat-proxy-base-url -d 'Override the CLI chat proxy base URL' -r
 complete -c grok -n "__fish_grok_using_subcommand agent; and not __fish_seen_subcommand_from stdio headless serve leader help" -l xai-api-base-url -d 'Override the public xAI API base URL' -r
+complete -c grok -n "__fish_grok_using_subcommand agent; and not __fish_seen_subcommand_from stdio headless serve leader help" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand agent; and not __fish_seen_subcommand_from stdio headless serve leader help" -l reauth -l --reauthenticate -d 'Run authentication before starting the agent'
 complete -c grok -n "__fish_grok_using_subcommand agent; and not __fish_seen_subcommand_from stdio headless serve leader help" -l always-approve -d 'Auto-approve all tool executions'
 complete -c grok -n "__fish_grok_using_subcommand agent; and not __fish_seen_subcommand_from stdio headless serve leader help" -l leader -d 'Connect to a shared leader process instead of starting a new agent. Allows multiple clients to share one backend. Defaults to [cli] use_leader in config.toml'
 complete -c grok -n "__fish_grok_using_subcommand agent; and not __fish_seen_subcommand_from stdio headless serve leader help" -l no-leader -d 'Start a new agent even when config enables leader mode'
-complete -c grok -n "__fish_grok_using_subcommand agent; and not __fish_seen_subcommand_from stdio headless serve leader help" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand agent; and not __fish_seen_subcommand_from stdio headless serve leader help" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c grok -n "__fish_grok_using_subcommand agent; and not __fish_seen_subcommand_from stdio headless serve leader help" -f -a "stdio" -d 'Run the agent over stdio'
 complete -c grok -n "__fish_grok_using_subcommand agent; and not __fish_seen_subcommand_from stdio headless serve leader help" -f -a "headless" -d 'Run the agent headlessly over the Grok WebSocket relay'
 complete -c grok -n "__fish_grok_using_subcommand agent; and not __fish_seen_subcommand_from stdio headless serve leader help" -f -a "serve" -d 'Run the agent as a WebSocket server'
 complete -c grok -n "__fish_grok_using_subcommand agent; and not __fish_seen_subcommand_from stdio headless serve leader help" -f -a "leader" -d 'Run as the shared leader process for other clients'
 complete -c grok -n "__fish_grok_using_subcommand agent; and not __fish_seen_subcommand_from stdio headless serve leader help" -f -a "help" -d 'Print this message or the help of the given subcommand(s)'
-complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from stdio" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from stdio" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from stdio" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from headless" -l grok-ws-origin -r
 complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from headless" -l grok-ws-url -r
-complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from headless" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from headless" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from headless" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from serve" -l bind -d 'Address for the server to listen on' -r
 complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from serve" -l secret -d 'Secret token for client authentication (auto-generated if not provided)' -r
 complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from serve" -l remote -d 'Remote agent URL for proxy mode' -r
 complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from serve" -l grok-ws-origin -r
 complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from serve" -l grok-ws-url -r
-complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from serve" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from serve" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from serve" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from leader" -l grok-ws-origin -r
 complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from leader" -l grok-ws-url -r
+complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from leader" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from leader" -l no-exit-on-disconnect -d 'Keep the leader running after the last client disconnects'
 complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from leader" -l no-auto-update -d 'Disable periodic auto-update checks for the leader'
-complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from leader" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from leader" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from help" -f -a "stdio" -d 'Run the agent over stdio'
 complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from help" -f -a "headless" -d 'Run the agent headlessly over the Grok WebSocket relay'
 complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from help" -f -a "serve" -d 'Run the agent as a WebSocket server'
 complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from help" -f -a "leader" -d 'Run as the shared leader process for other clients'
 complete -c grok -n "__fish_grok_using_subcommand agent; and __fish_seen_subcommand_from help" -f -a "help" -d 'Print this message or the help of the given subcommand(s)'
+complete -c grok -n "__fish_grok_using_subcommand import" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand import" -l list -d 'List available sessions without importing'
 complete -c grok -n "__fish_grok_using_subcommand import" -l json -d 'NDJSON output to stdout'
-complete -c grok -n "__fish_grok_using_subcommand import" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand import" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand inspect" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand inspect" -l json -d 'Emit machine-readable JSON output'
-complete -c grok -n "__fish_grok_using_subcommand inspect" -s h -l help -d 'Print help'
-complete -c grok -n "__fish_grok_using_subcommand leader; and not __fish_seen_subcommand_from list info kill profile help" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand inspect" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand leader; and not __fish_seen_subcommand_from list info kill profile help" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand leader; and not __fish_seen_subcommand_from list info kill profile help" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c grok -n "__fish_grok_using_subcommand leader; and not __fish_seen_subcommand_from list info kill profile help" -f -a "list" -d 'List running leader processes'
 complete -c grok -n "__fish_grok_using_subcommand leader; and not __fish_seen_subcommand_from list info kill profile help" -f -a "info" -d 'Show details for a leader process'
 complete -c grok -n "__fish_grok_using_subcommand leader; and not __fish_seen_subcommand_from list info kill profile help" -f -a "kill" -d 'Stop all running leader processes'
 complete -c grok -n "__fish_grok_using_subcommand leader; and not __fish_seen_subcommand_from list info kill profile help" -f -a "profile" -d 'Manage CPU profiling for a leader process'
 complete -c grok -n "__fish_grok_using_subcommand leader; and not __fish_seen_subcommand_from list info kill profile help" -f -a "help" -d 'Print this message or the help of the given subcommand(s)'
+complete -c grok -n "__fish_grok_using_subcommand leader; and __fish_seen_subcommand_from list" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand leader; and __fish_seen_subcommand_from list" -l json -d 'Emit machine-readable JSON output'
-complete -c grok -n "__fish_grok_using_subcommand leader; and __fish_seen_subcommand_from list" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand leader; and __fish_seen_subcommand_from list" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c grok -n "__fish_grok_using_subcommand leader; and __fish_seen_subcommand_from info" -l pid -d 'Leader process ID from `grok leader list`' -r
+complete -c grok -n "__fish_grok_using_subcommand leader; and __fish_seen_subcommand_from info" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand leader; and __fish_seen_subcommand_from info" -l json -d 'Emit machine-readable JSON output'
-complete -c grok -n "__fish_grok_using_subcommand leader; and __fish_seen_subcommand_from info" -s h -l help -d 'Print help'
-complete -c grok -n "__fish_grok_using_subcommand leader; and __fish_seen_subcommand_from kill" -s h -l help -d 'Print help'
-complete -c grok -n "__fish_grok_using_subcommand leader; and __fish_seen_subcommand_from profile" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand leader; and __fish_seen_subcommand_from info" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand leader; and __fish_seen_subcommand_from kill" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand leader; and __fish_seen_subcommand_from kill" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand leader; and __fish_seen_subcommand_from profile" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand leader; and __fish_seen_subcommand_from profile" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c grok -n "__fish_grok_using_subcommand leader; and __fish_seen_subcommand_from profile" -f -a "status" -d 'Show profiling status'
 complete -c grok -n "__fish_grok_using_subcommand leader; and __fish_seen_subcommand_from profile" -f -a "start" -d 'Start CPU profiling'
 complete -c grok -n "__fish_grok_using_subcommand leader; and __fish_seen_subcommand_from profile" -f -a "stop" -d 'Stop CPU profiling'
@@ -175,35 +190,43 @@ complete -c grok -n "__fish_grok_using_subcommand leader; and __fish_seen_subcom
 complete -c grok -n "__fish_grok_using_subcommand leader; and __fish_seen_subcommand_from help" -f -a "kill" -d 'Stop all running leader processes'
 complete -c grok -n "__fish_grok_using_subcommand leader; and __fish_seen_subcommand_from help" -f -a "profile" -d 'Manage CPU profiling for a leader process'
 complete -c grok -n "__fish_grok_using_subcommand leader; and __fish_seen_subcommand_from help" -f -a "help" -d 'Print this message or the help of the given subcommand(s)'
-complete -c grok -n "__fish_grok_using_subcommand logout" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand logout" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand logout" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand login" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand login" -l legacy -d 'Ignored (kept for backwards compatibility). OAuth2 is now the only auth method'
 complete -c grok -n "__fish_grok_using_subcommand login" -l oauth -d 'Use Grok OAuth via auth.x.ai'
 complete -c grok -n "__fish_grok_using_subcommand login" -l device-auth -l device-code -d 'Use device-code authentication for headless/remote environments'
 complete -c grok -n "__fish_grok_using_subcommand login" -l devbox -d 'Mint credentials via explorer-service (devbox pods only)'
-complete -c grok -n "__fish_grok_using_subcommand login" -s h -l help -d 'Print help'
-complete -c grok -n "__fish_grok_using_subcommand mcp; and not __fish_seen_subcommand_from list add remove doctor help" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand login" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand mcp; and not __fish_seen_subcommand_from list add remove doctor help" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand mcp; and not __fish_seen_subcommand_from list add remove doctor help" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c grok -n "__fish_grok_using_subcommand mcp; and not __fish_seen_subcommand_from list add remove doctor help" -f -a "list" -d 'List configured MCP servers'
 complete -c grok -n "__fish_grok_using_subcommand mcp; and not __fish_seen_subcommand_from list add remove doctor help" -f -a "add" -d 'Add or update an MCP server configuration'
 complete -c grok -n "__fish_grok_using_subcommand mcp; and not __fish_seen_subcommand_from list add remove doctor help" -f -a "remove" -d 'Remove an MCP server configuration'
 complete -c grok -n "__fish_grok_using_subcommand mcp; and not __fish_seen_subcommand_from list add remove doctor help" -f -a "doctor" -d 'Diagnose MCP server configuration and connectivity'
 complete -c grok -n "__fish_grok_using_subcommand mcp; and not __fish_seen_subcommand_from list add remove doctor help" -f -a "help" -d 'Print this message or the help of the given subcommand(s)'
+complete -c grok -n "__fish_grok_using_subcommand mcp; and __fish_seen_subcommand_from list" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand mcp; and __fish_seen_subcommand_from list" -l json -d 'Emit machine-readable JSON output'
-complete -c grok -n "__fish_grok_using_subcommand mcp; and __fish_seen_subcommand_from list" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand mcp; and __fish_seen_subcommand_from list" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c grok -n "__fish_grok_using_subcommand mcp; and __fish_seen_subcommand_from add" -l command -d 'Command to run for stdio transport' -r
 complete -c grok -n "__fish_grok_using_subcommand mcp; and __fish_seen_subcommand_from add" -l args -d 'Arguments to pass to the command' -r
 complete -c grok -n "__fish_grok_using_subcommand mcp; and __fish_seen_subcommand_from add" -l env -d 'Environment variables (KEY=VALUE)' -r
 complete -c grok -n "__fish_grok_using_subcommand mcp; and __fish_seen_subcommand_from add" -l url -d 'Server URL for HTTP or SSE transport' -r
 complete -c grok -n "__fish_grok_using_subcommand mcp; and __fish_seen_subcommand_from add" -l type -d 'Transport type for HTTP servers' -r
-complete -c grok -n "__fish_grok_using_subcommand mcp; and __fish_seen_subcommand_from add" -s h -l help -d 'Print help'
-complete -c grok -n "__fish_grok_using_subcommand mcp; and __fish_seen_subcommand_from remove" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand mcp; and __fish_seen_subcommand_from add" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand mcp; and __fish_seen_subcommand_from add" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand mcp; and __fish_seen_subcommand_from remove" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand mcp; and __fish_seen_subcommand_from remove" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand mcp; and __fish_seen_subcommand_from doctor" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand mcp; and __fish_seen_subcommand_from doctor" -l json -d 'Emit machine-readable JSON output'
-complete -c grok -n "__fish_grok_using_subcommand mcp; and __fish_seen_subcommand_from doctor" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand mcp; and __fish_seen_subcommand_from doctor" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c grok -n "__fish_grok_using_subcommand mcp; and __fish_seen_subcommand_from help" -f -a "list" -d 'List configured MCP servers'
 complete -c grok -n "__fish_grok_using_subcommand mcp; and __fish_seen_subcommand_from help" -f -a "add" -d 'Add or update an MCP server configuration'
 complete -c grok -n "__fish_grok_using_subcommand mcp; and __fish_seen_subcommand_from help" -f -a "remove" -d 'Remove an MCP server configuration'
 complete -c grok -n "__fish_grok_using_subcommand mcp; and __fish_seen_subcommand_from help" -f -a "doctor" -d 'Diagnose MCP server configuration and connectivity'
 complete -c grok -n "__fish_grok_using_subcommand mcp; and __fish_seen_subcommand_from help" -f -a "help" -d 'Print this message or the help of the given subcommand(s)'
-complete -c grok -n "__fish_grok_using_subcommand plugin; and not __fish_seen_subcommand_from list install uninstall rm remove update enable disable details validate tag marketplace help" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand plugin; and not __fish_seen_subcommand_from list install uninstall rm remove update enable disable details validate tag marketplace help" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand plugin; and not __fish_seen_subcommand_from list install uninstall rm remove update enable disable details validate tag marketplace help" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c grok -n "__fish_grok_using_subcommand plugin; and not __fish_seen_subcommand_from list install uninstall rm remove update enable disable details validate tag marketplace help" -f -a "list" -d 'List installed plugins'
 complete -c grok -n "__fish_grok_using_subcommand plugin; and not __fish_seen_subcommand_from list install uninstall rm remove update enable disable details validate tag marketplace help" -f -a "install" -d 'Install a plugin from a git URL or local path'
 complete -c grok -n "__fish_grok_using_subcommand plugin; and not __fish_seen_subcommand_from list install uninstall rm remove update enable disable details validate tag marketplace help" -f -a "uninstall" -d 'Uninstall an installed plugin by name'
@@ -217,30 +240,42 @@ complete -c grok -n "__fish_grok_using_subcommand plugin; and not __fish_seen_su
 complete -c grok -n "__fish_grok_using_subcommand plugin; and not __fish_seen_subcommand_from list install uninstall rm remove update enable disable details validate tag marketplace help" -f -a "tag" -d 'Create a release git tag from the plugin\'s manifest version'
 complete -c grok -n "__fish_grok_using_subcommand plugin; and not __fish_seen_subcommand_from list install uninstall rm remove update enable disable details validate tag marketplace help" -f -a "marketplace" -d 'Manage marketplace sources'
 complete -c grok -n "__fish_grok_using_subcommand plugin; and not __fish_seen_subcommand_from list install uninstall rm remove update enable disable details validate tag marketplace help" -f -a "help" -d 'Print this message or the help of the given subcommand(s)'
+complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from list" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from list" -l json -d 'Emit machine-readable JSON output'
 complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from list" -l available -d 'Include available plugins from marketplace sources. Requires --json'
-complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from list" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from list" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from install" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from install" -l trust -d 'Trust the plugin immediately (skip confirmation prompt)'
-complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from install" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from install" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from uninstall" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from uninstall" -l confirm -d 'Skip confirmation for multi-plugin repos'
 complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from uninstall" -l keep-data -d 'Preserve the plugin\'s persistent data directory'
-complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from uninstall" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from uninstall" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from rm" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from rm" -l confirm -d 'Skip confirmation for multi-plugin repos'
 complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from rm" -l keep-data -d 'Preserve the plugin\'s persistent data directory'
-complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from rm" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from rm" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from remove" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from remove" -l confirm -d 'Skip confirmation for multi-plugin repos'
 complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from remove" -l keep-data -d 'Preserve the plugin\'s persistent data directory'
-complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from remove" -s h -l help -d 'Print help'
-complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from update" -s h -l help -d 'Print help'
-complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from enable" -s h -l help -d 'Print help'
-complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from disable" -s h -l help -d 'Print help'
-complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from details" -s h -l help -d 'Print help'
-complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from validate" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from remove" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from update" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from update" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from enable" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from enable" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from disable" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from disable" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from details" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from details" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from validate" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from validate" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from tag" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from tag" -l push -d 'Push the tag to the remote after creating it'
 complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from tag" -s f -l force -d 'Create the tag even if the working tree is dirty or tag exists'
 complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from tag" -l dry-run -d 'Print what would be tagged without creating the tag'
-complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from tag" -s h -l help -d 'Print help'
-complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from marketplace" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from tag" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from marketplace" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from marketplace" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from marketplace" -f -a "list" -d 'List configured marketplace sources and their plugins'
 complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from marketplace" -f -a "add" -d 'Add a marketplace source (git URL or GitHub shorthand)'
 complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from marketplace" -f -a "remove" -d 'Remove a marketplace source and uninstall its plugins'
@@ -257,50 +292,66 @@ complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcom
 complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from help" -f -a "tag" -d 'Create a release git tag from the plugin\'s manifest version'
 complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from help" -f -a "marketplace" -d 'Manage marketplace sources'
 complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from help" -f -a "help" -d 'Print this message or the help of the given subcommand(s)'
-complete -c grok -n "__fish_grok_using_subcommand memory; and not __fish_seen_subcommand_from clear help" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand memory; and not __fish_seen_subcommand_from clear help" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand memory; and not __fish_seen_subcommand_from clear help" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c grok -n "__fish_grok_using_subcommand memory; and not __fish_seen_subcommand_from clear help" -f -a "clear" -d 'Clear memory files (workspace by default)'
 complete -c grok -n "__fish_grok_using_subcommand memory; and not __fish_seen_subcommand_from clear help" -f -a "help" -d 'Print this message or the help of the given subcommand(s)'
+complete -c grok -n "__fish_grok_using_subcommand memory; and __fish_seen_subcommand_from clear" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand memory; and __fish_seen_subcommand_from clear" -l workspace -d 'Clear workspace-scoped memory (MEMORY.md, sessions/, index.sqlite)'
 complete -c grok -n "__fish_grok_using_subcommand memory; and __fish_seen_subcommand_from clear" -l global -d 'Clear global MEMORY.md'
 complete -c grok -n "__fish_grok_using_subcommand memory; and __fish_seen_subcommand_from clear" -l all -d 'Clear both workspace and global memory'
 complete -c grok -n "__fish_grok_using_subcommand memory; and __fish_seen_subcommand_from clear" -s y -l yes -d 'Skip confirmation prompt'
-complete -c grok -n "__fish_grok_using_subcommand memory; and __fish_seen_subcommand_from clear" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand memory; and __fish_seen_subcommand_from clear" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c grok -n "__fish_grok_using_subcommand memory; and __fish_seen_subcommand_from help" -f -a "clear" -d 'Clear memory files (workspace by default)'
 complete -c grok -n "__fish_grok_using_subcommand memory; and __fish_seen_subcommand_from help" -f -a "help" -d 'Print this message or the help of the given subcommand(s)'
-complete -c grok -n "__fish_grok_using_subcommand models" -s h -l help -d 'Print help'
-complete -c grok -n "__fish_grok_using_subcommand sessions; and not __fish_seen_subcommand_from list search help" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand models" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand models" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand sessions; and not __fish_seen_subcommand_from list search help" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand sessions; and not __fish_seen_subcommand_from list search help" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c grok -n "__fish_grok_using_subcommand sessions; and not __fish_seen_subcommand_from list search help" -f -a "list" -d 'List recent sessions (same as search with no query)'
 complete -c grok -n "__fish_grok_using_subcommand sessions; and not __fish_seen_subcommand_from list search help" -f -a "search" -d 'Search sessions by keyword'
 complete -c grok -n "__fish_grok_using_subcommand sessions; and not __fish_seen_subcommand_from list search help" -f -a "help" -d 'Print this message or the help of the given subcommand(s)'
 complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subcommand_from list" -s n -l limit -d 'Maximum number of sessions to show' -r
-complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subcommand_from list" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subcommand_from list" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subcommand_from list" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subcommand_from search" -s n -l limit -d 'Maximum number of sessions to show' -r
-complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subcommand_from search" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subcommand_from search" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subcommand_from search" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subcommand_from help" -f -a "list" -d 'List recent sessions (same as search with no query)'
 complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subcommand_from help" -f -a "search" -d 'Search sessions by keyword'
 complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subcommand_from help" -f -a "help" -d 'Print this message or the help of the given subcommand(s)'
-complete -c grok -n "__fish_grok_using_subcommand setup" -s h -l help -d 'Print help'
-complete -c grok -n "__fish_grok_using_subcommand share" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand setup" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand setup" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand share" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand share" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand ssh" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand ssh" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand export" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand export" -s c -l clipboard -d 'Copy to clipboard instead of writing to stdout'
-complete -c grok -n "__fish_grok_using_subcommand export" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand export" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c grok -n "__fish_grok_using_subcommand trace" -s o -l output -d 'Output path (default: ~/.grok/trace-exports/<session-id>.tar.gz)' -r -F
+complete -c grok -n "__fish_grok_using_subcommand trace" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand trace" -l local -d 'Save locally only, skip remote upload'
 complete -c grok -n "__fish_grok_using_subcommand trace" -l json -d 'Emit machine-readable JSON output'
-complete -c grok -n "__fish_grok_using_subcommand trace" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand trace" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c grok -n "__fish_grok_using_subcommand update" -l version -d 'Install a specific version (e.g. 0.1.150 or 0.1.151-alpha.2)' -r
+complete -c grok -n "__fish_grok_using_subcommand update" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand update" -l check -d 'Check for updates without installing'
 complete -c grok -n "__fish_grok_using_subcommand update" -l json -d 'Emit machine-readable JSON output (for --check)'
 complete -c grok -n "__fish_grok_using_subcommand update" -l force-reinstall -d 'Force re-download and install even if already up to date'
 complete -c grok -n "__fish_grok_using_subcommand update" -l alpha -d 'Switch to the alpha release channel (faster updates, may have bugs)'
 complete -c grok -n "__fish_grok_using_subcommand update" -l stable -d 'Switch to the stable release channel (default, weekly releases)'
-complete -c grok -n "__fish_grok_using_subcommand update" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand update" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand version" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand version" -l json -d 'Emit machine-readable JSON output'
-complete -c grok -n "__fish_grok_using_subcommand version" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand version" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand v" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand v" -l json -d 'Emit machine-readable JSON output'
-complete -c grok -n "__fish_grok_using_subcommand v" -s h -l help -d 'Print help'
-complete -c grok -n "__fish_grok_using_subcommand completions" -s h -l help -d 'Print help'
-complete -c grok -n "__fish_grok_using_subcommand worktree; and not __fish_seen_subcommand_from list show rm gc db help" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand v" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand completions" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand completions" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand worktree; and not __fish_seen_subcommand_from list show rm gc db help" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand worktree; and not __fish_seen_subcommand_from list show rm gc db help" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c grok -n "__fish_grok_using_subcommand worktree; and not __fish_seen_subcommand_from list show rm gc db help" -f -a "list" -d 'List tracked worktrees'
 complete -c grok -n "__fish_grok_using_subcommand worktree; and not __fish_seen_subcommand_from list show rm gc db help" -f -a "show" -d 'Show details for a specific worktree'
 complete -c grok -n "__fish_grok_using_subcommand worktree; and not __fish_seen_subcommand_from list show rm gc db help" -f -a "rm" -d 'Remove worktrees'
@@ -309,18 +360,23 @@ complete -c grok -n "__fish_grok_using_subcommand worktree; and not __fish_seen_
 complete -c grok -n "__fish_grok_using_subcommand worktree; and not __fish_seen_subcommand_from list show rm gc db help" -f -a "help" -d 'Print this message or the help of the given subcommand(s)'
 complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from list" -l repo -r
 complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from list" -l type -r
+complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from list" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from list" -l json
 complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from list" -l all
-complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from list" -s h -l help -d 'Print help'
-complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from show" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from list" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from show" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from show" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from rm" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from rm" -s f -l force
 complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from rm" -l dry-run
-complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from rm" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from rm" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from gc" -l max-age -r
+complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from gc" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from gc" -l dry-run
 complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from gc" -s f -l force
-complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from gc" -s h -l help -d 'Print help'
-complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from db" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from gc" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from db" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from db" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from db" -f -a "rebuild" -d 'Rebuild DB from filesystem scan'
 complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from db" -f -a "stats" -d 'Show DB statistics'
 complete -c grok -n "__fish_grok_using_subcommand worktree; and __fish_seen_subcommand_from db" -f -a "path" -d 'Print DB file path'
