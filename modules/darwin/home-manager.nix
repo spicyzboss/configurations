@@ -100,10 +100,9 @@ in
     entries  = [
       { path = "/Applications/Google Chrome.app"; }
       { path = "/System/Applications/Apps.app"; }
-      { path = "/Applications/Cursor.app"; }
-      { path = "${pkgs.kitty}/Applications/Kitty.app"; }
+      { path = "/Applications/kitty.app"; }
       { path = "/Applications/Slack.app"; }
-      { path = "/System/Applications/Mail.app"; }
+      { path = "/Applications/Claude.app"; }
       { path = "/System/Applications/Calendar.app"; }
       { path = "/System/Applications/Reminders.app"; }
       { path = "/System/Applications/System Settings.app"; }
