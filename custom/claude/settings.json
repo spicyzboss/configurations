@@ -47,6 +47,9 @@
     "defaultMode": "bypassPermissions"
   },
   "model": "opus[1m]",
+  "worktree": {
+    "baseRef": "fresh"
+  },
   "statusLine": {
     "type": "command",
     "command": "ccstatusline",
@@ -69,9 +72,15 @@
     }
   },
   "alwaysThinkingEnabled": true,
+  "autoCompactWindow": 1000000,
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
   "skipWorkflowUsageWarning": true,
+  "theme": "dark",
+  "editorMode": "normal",
+  "preferredNotifChannel": "kitty",
+  "teammateMode": "tmux",
+  "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
-  "autoCompactWindow": 1000000
+  "remoteControlAtStartup": true
 }
