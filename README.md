@@ -193,6 +193,26 @@ The link command creates symlinks into `~/.config/fish` and leaves mutable Fish 
 
 ---
 
+## tmux Config
+
+tmux is installed by Nix, while the user tmux config is tracked in this repo as shared custom config and not linked by Home Manager. Link it after applying the Nix config:
+
+```bash
+./scripts/link-tmux
+```
+
+Tracked files live under `custom/tmux/`:
+
+- `tmux.conf`
+
+The link command creates a symlink at `~/.config/tmux/tmux.conf`. If a non-symlink file already exists, it refuses to replace it. Use `--force` to move the existing path aside with a timestamped `.bak` suffix.
+
+```bash
+./scripts/link-tmux --force
+```
+
+---
+
 ## Commands
 
 If flakes are not in nix.conf, prefix with `nix --extra-experimental-features 'nix-command flakes' run` instead of `nix run`.

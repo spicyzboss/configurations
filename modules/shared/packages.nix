@@ -37,6 +37,7 @@ let
     ripgrep
     terraform
     tflint
+    tmux
     tree
     unrar
     unzip
