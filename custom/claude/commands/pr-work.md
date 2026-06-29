@@ -134,8 +134,7 @@ Assistant should:
 10. Show commit count being pushed
 11. Push: `git push -u origin {the-branch-name-from-step-5}`
 12. Ask: "Draft PR or regular PR? Which base branch? (develop/main)"
-13. Create PR with the template body; include `## Ticket` only if a key was given in step 2
-14. Copy PR URL to clipboard and share with user
+13. Copy PR URL to clipboard and share with user
 
 ## Error Handling
 
@@ -147,4 +146,4 @@ Assistant should:
 - **gh CLI not available**: Provide manual PR creation URL from git push output
 - **Uncommitted changes**: Ask user if they want to stash, commit, or discard
 - **On wrong base branch**: Ask user which base branch to use (develop/main)
-- **No ticket number**: Use `{type}/{kebab-description}` for the branch and omit `## Ticket` from the PR body
+- **No ticket number**: Use `{type}/{kebab-description}` for the branch
