@@ -68,7 +68,7 @@ When the user requests to create a PR, follow these steps:
 - Ask if user wants a draft PR or regular PR
 - Use GitHub CLI: `gh pr create`
 - PR title: Format as `[{branch-target}][{branch-prefix-type}]: {description}` (do not include ticket number; ticket goes in body only)
-- PR body should include `## Summary`, `## Changes`, `## Testing`, and `## DoD Checklist` as below.
+- PR body should include `## Summary`, `## Changes`, `## Testing` as below.
 
   ```markdown
   ## Summary
@@ -82,10 +82,6 @@ When the user requests to create a PR, follow these steps:
   ## Testing
   - {Testing done}
   - {Test results}
-
-  ## DoD Checklist
-  - {Requirement 1}
-  - {Requirement 2}
   ```
 
 - Base branch: Ask which branch to target (usually `dev` or `main`)
