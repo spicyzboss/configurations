@@ -9,7 +9,7 @@
   "attribution": {
     "commit": "",
     "pr": "",
-    "sessionUrl": ""
+    "sessionUrl": false
   },
   "permissions": {
     "deny": [
