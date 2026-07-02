@@ -160,6 +160,7 @@ Tracked files live under `custom/claude/`:
 
 - `settings.json`
 - `commands/`
+- `skills/`
 - `hooks/` when needed
 
 The link command creates symlinks into `~/.claude`. If a non-symlink file already exists, it refuses to replace it. Use `--force` to move the existing file or directory aside with a timestamped `.bak` suffix.
