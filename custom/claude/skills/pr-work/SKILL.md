@@ -1,6 +1,11 @@
+---
+name: pr-work
+description: Create a pull request following work-style conventions with optional ticket tracking. Use when the user wants to branch, commit, push, and open a PR for work changes — e.g. "create a PR", "branch and push this", "open a pull request", or /pr-work. Guides branch naming with optional ticket prefix, conventional commits, and gh pr create.
+---
+
 # pr-work
 
-Create a pull request following work-style conventions with optional ticket tracking. This command will guide you through:
+Create a pull request following work-style conventions with optional ticket tracking. This skill will guide you through:
 1. Checking git status and verifying clean working tree
 2. Creating a feature branch (with ticket prefix in the name only when a ticket is provided)
 3. Staging and committing changes
