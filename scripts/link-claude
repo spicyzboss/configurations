@@ -67,4 +67,8 @@ if [ -d "$SOURCE_DIR/hooks" ]; then
   link_path "$SOURCE_DIR/hooks" "$HOME/.claude/hooks"
 fi
 
+if [ -d "$SOURCE_DIR/skills" ]; then
+  link_path "$SOURCE_DIR/skills" "$HOME/.claude/skills"
+fi
+
 printf '%s\n' "Claude config linked."
