@@ -13,15 +13,11 @@
   },
   "permissions": {
     "deny": [
-      "Bash(rm -rf *)",
-      "Bash(rm -fr *)",
       "Bash(sudo *)",
       "Bash(mkfs *)",
       "Bash(dd *)",
       "Bash(wget *|bash*)",
       "Bash(wget *| bash*)",
-      "Bash(git push --force*)",
-      "Bash(git push *--force*)",
       "Bash(git reset --hard*)",
       "Edit(~/.bashrc)",
       "Edit(~/.zshrc)",
@@ -47,7 +43,7 @@
     ],
     "defaultMode": "bypassPermissions"
   },
-  "model": "fable[1m]",
+  "model": "sonnet[1m]",
   "worktree": {
     "baseRef": "fresh"
   },
@@ -81,7 +77,7 @@
   "editorMode": "normal",
   "preferredNotifChannel": "kitty",
   "teammateMode": "tmux",
+  "remoteControlAtStartup": true,
   "inputNeededNotifEnabled": true,
-  "agentPushNotifEnabled": true,
-  "remoteControlAtStartup": true
+  "agentPushNotifEnabled": true
 }
