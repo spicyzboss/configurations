@@ -79,7 +79,13 @@ gh api repos/<owner>/<repo>/pulls/<n>/comments \
   -f body="..." -f commit_id=<latest-sha> -F in_reply_to=<comment-id>
 ```
 
-For bodies with code blocks/backticks, write to a temp file and use `-f body=@<path>` instead of an inline string — avoids shell-escaping breakage. When several comments need near-identical replies (e.g. the same fix applied across multiple workflow files), that's fine — post one reply per comment ID, each pointing at the same commit, rather than skipping the "duplicates."
+For bodies with code blocks/backticks, don't inline the string — shell-escaping a multi-line markdown body with backticks is exactly how this goes wrong. **`-f key=@<path>` does NOT read the file** — `-f`/`--raw-field` always treats the value as a literal string, so `-f body=@foo.txt` posts the literal text `@foo.txt`. This happened in practice: 12 replies went out as literal file-path strings before it was caught on the next fetch. Use one of:
+- `-f body="$(cat <path>)"` — command substitution, verified working.
+- `-F body=@<path>` — `-F`/`--field` is the one that supports `@path` file-reading.
+
+Either way, **verify immediately after posting**: `gh api repos/<owner>/<repo>/pulls/comments/<id> --jq '.body'` and confirm it's the real content, not a re-print of what you *meant* to send. If it's wrong, fix it with a `PATCH` to the same endpoint (`-X PATCH -f body="$(cat <path>)"`) before moving on — don't leave broken placeholder text sitting on a real PR while you post the remaining replies.
+
+When several comments need near-identical replies (e.g. the same fix applied across multiple workflow files), that's fine — post one reply per comment ID, each pointing at the same commit, rather than skipping the "duplicates."
 
 Write every reply in first person as the PR author — no mention of AI/Claude/assistant involvement, just the technical content (the actual command output, the test name that already covers it, the commit that fixed it). It should read like a developer's own response.
 
