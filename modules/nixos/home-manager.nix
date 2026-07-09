@@ -11,14 +11,11 @@ in
   catppuccin = {
     flavor = "mocha";
     bat.enable = true;
-    btop.enable = true;
     delta.enable = true;
     fzf.enable = true;
-    helix.enable = true;
     kitty.enable = true;
     lazygit.enable = true;
     starship.enable = true;
-    yazi.enable = true;
   };
 
   home = {

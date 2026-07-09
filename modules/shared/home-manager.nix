@@ -78,8 +78,6 @@ in
     };
   };
 
-  helix = import ./helix.nix { inherit pkgs; };
-
   kitty = {
     enable = true;
     font = {
@@ -120,25 +118,12 @@ in
 
   bat.enable = true;
 
-  btop = {
-    enable = true;
-    settings = {
-      update_ms = 500;
-    };
-  };
-
   fzf = {
     enable = true;
     enableFishIntegration = false;
   };
 
   lazygit.enable = true;
-
-  yazi = {
-    enable = true;
-    enableFishIntegration = false;
-    shellWrapperName = "y";
-  };
 
   starship = {
     enable = true;

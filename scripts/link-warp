@@ -1,0 +1,68 @@
+#!/bin/sh
+set -eu
+
+usage() {
+  printf '%s\n' "Usage: $0 [--force]"
+  printf '%s\n' "Links repo-tracked Warp config into ~/.warp."
+}
+
+die() {
+  printf '%s\n' "$1" >&2
+  exit 1
+}
+
+FORCE=0
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --force|-f)
+      FORCE=1
+      ;;
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    *)
+      usage >&2
+      die "Unknown argument: $1"
+      ;;
+  esac
+  shift
+done
+
+SCRIPT_DIR="$(CDPATH= cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(CDPATH= cd "$SCRIPT_DIR/.." && pwd)"
+SOURCE_DIR="$REPO_ROOT/custom/warp"
+TARGET_DIR="$HOME/.warp"
+TIMESTAMP="$(date '+%Y%m%d%H%M%S')"
+
+[ -d "$SOURCE_DIR" ] || die "Missing Warp config: $SOURCE_DIR"
+
+mkdir -p "$TARGET_DIR"
+
+link_path() {
+  src="$1"
+  dest="$2"
+
+  [ -e "$src" ] || die "Missing source: $src"
+
+  if [ -L "$dest" ]; then
+    rm "$dest"
+  elif [ -e "$dest" ]; then
+    if [ "$FORCE" -ne 1 ]; then
+      die "Refusing to replace non-symlink: $dest. Re-run with --force to move it aside."
+    fi
+
+    backup="$dest.bak.$TIMESTAMP"
+    mv "$dest" "$backup"
+    printf '%s\n' "Moved $dest to $backup"
+  fi
+
+  ln -s "$src" "$dest"
+  printf '%s\n' "Linked $dest -> $src"
+}
+
+link_path "$SOURCE_DIR/settings.toml" "$TARGET_DIR/settings.toml"
+link_path "$SOURCE_DIR/themes" "$TARGET_DIR/themes"
+
+printf '%s\n' "Warp config linked."

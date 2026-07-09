@@ -6,8 +6,10 @@ let
 
   myFonts = import ./fonts.nix { inherit pkgs; };
 
-  linuxOnlyPackages = with pkgs; [ jetbrains.datagrip slack ];
+  # helix installed via `brew --HEAD` on darwin (modules/darwin/brews.nix) instead of nixpkgs
+  linuxOnlyPackages = with pkgs; [ jetbrains.datagrip slack helix ];
   basePackages = with pkgs; [
+    btop
     bun
     code-cursor
     coreutils
@@ -23,7 +25,6 @@ let
     glow
     gopls
     _1password-cli
-    helix
     imagemagick
     jdk21
     jq
@@ -42,6 +43,7 @@ let
     unrar
     unzip
     uv
+    yazi
     zig
     zls
     zip

@@ -201,10 +201,8 @@
   #   $ nix search <pkg>
   environment.systemPackages = with pkgs; [
     git
-    helix
     wl-clipboard
     wayland-utils
-    btop
     rustup
   ];
 

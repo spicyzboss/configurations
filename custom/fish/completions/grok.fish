@@ -1,6 +1,6 @@
 # Print an optspec for argparse to handle cmd's options that are independent of any subcommand.
 function __fish_grok_global_optspecs
-	string join \n v/version cwd= leader-socket= debug debug-file= always-approve trust allow= deny= p/single= prompt-json= prompt-file= verbatim output-format= json-schema= m/model= reasoning-effort= rules= compaction-mode= compaction-detail= system-prompt-override= r/resume= load= c/continue s/session-id= fork-session w/worktree= worktree-ref= restore-code no-plan no-subagents no-ask-user experimental-memory no-memory agent= agents= tools= disallowed-tools= effort= max-turns= permission-mode= disable-web-search check no-wait-for-background background-wait-timeout= best-of-n= sandbox= storage-mode= client-identifier= hunk-tracker-mode= terminal fs-read fs-write no-auto-update todo-gate installer= no-alt-screen minimal log-sampling force-login oauth leader no-leader h/help
+	string join \n v/version cwd= leader-socket= debug debug-file= always-approve trust allow= deny= p/single= prompt-json= prompt-file= verbatim output-format= json-schema= m/model= reasoning-effort= rules= compaction-mode= compaction-detail= system-prompt-override= r/resume= load= c/continue s/session-id= fork-session w/worktree= worktree-ref= restore-code no-plan no-subagents no-ask-user experimental-memory no-memory agent= agents= tools= disallowed-tools= max-turns= permission-mode= disable-web-search check no-wait-for-background background-wait-timeout= best-of-n= sandbox= storage-mode= client-identifier= hunk-tracker-mode= terminal fs-read fs-write no-auto-update todo-gate installer= no-alt-screen minimal log-sampling force-login oauth leader no-leader h/help
 end
 
 function __fish_grok_needs_command
@@ -37,7 +37,7 @@ json\t''
 streaming-json\t''"
 complete -c grok -n "__fish_grok_needs_command" -l json-schema -d 'JSON Schema for structured output. When set, the model is constrained to produce JSON matching this schema. Implies --output-format json. Example: --json-schema \'{"type":"object","properties":{"name":{"type":"string"}}}\'' -r
 complete -c grok -n "__fish_grok_needs_command" -s m -l model -d 'Model ID to use' -r
-complete -c grok -n "__fish_grok_needs_command" -l reasoning-effort -d 'Reasoning effort for reasoning models' -r
+complete -c grok -n "__fish_grok_needs_command" -l reasoning-effort -l effort -d 'Reasoning effort for reasoning models' -r
 complete -c grok -n "__fish_grok_needs_command" -l rules -d 'Extra rules to append to the system prompt' -r
 complete -c grok -n "__fish_grok_needs_command" -l compaction-mode -d 'Compaction mode [summary|transcript|segments]: `summary` (default) adds no pointer; `transcript` points at the raw transcript; `segments` persists per-segment markdown to grep. Sets `GROK_COMPACTION_MODE`' -r
 complete -c grok -n "__fish_grok_needs_command" -l compaction-detail -d 'Segments verbatim detail [none|minimal|balanced|verbose] (default `verbose`). Only affects `--compaction-mode segments`. Sets `GROK_COMPACTION_DETAIL`' -r
@@ -51,11 +51,6 @@ complete -c grok -n "__fish_grok_needs_command" -l agent -d 'Agent name or defin
 complete -c grok -n "__fish_grok_needs_command" -l agents -d 'Inline subagent definitions as JSON' -r
 complete -c grok -n "__fish_grok_needs_command" -l tools -d 'Built-in tools to allow (comma-separated)' -r
 complete -c grok -n "__fish_grok_needs_command" -l disallowed-tools -d 'Built-in tools to remove (comma-separated)' -r
-complete -c grok -n "__fish_grok_needs_command" -l effort -d 'Effort level' -r -f -a "low\t''
-medium\t''
-high\t''
-xhigh\t''
-max\t''"
 complete -c grok -n "__fish_grok_needs_command" -l max-turns -d 'Maximum number of agent turns' -r
 complete -c grok -n "__fish_grok_needs_command" -l permission-mode -d 'Permission mode' -r -f -a "default\t''
 acceptEdits\t''
@@ -124,7 +119,7 @@ complete -c grok -n "__fish_grok_needs_command" -a "workspace" -d 'Expose this w
 complete -c grok -n "__fish_grok_needs_command" -a "dashboard" -d 'Open the Agent Dashboard view at startup'
 complete -c grok -n "__fish_grok_needs_command" -a "help" -d 'Print this message or the help of the given subcommand(s)'
 complete -c grok -n "__fish_grok_using_subcommand agent; and not __fish_seen_subcommand_from stdio headless serve leader help" -s m -l model -d 'Model ID to use' -r
-complete -c grok -n "__fish_grok_using_subcommand agent; and not __fish_seen_subcommand_from stdio headless serve leader help" -l reasoning-effort -d 'Reasoning effort for reasoning models' -r
+complete -c grok -n "__fish_grok_using_subcommand agent; and not __fish_seen_subcommand_from stdio headless serve leader help" -l reasoning-effort -l effort -d 'Reasoning effort for reasoning models' -r
 complete -c grok -n "__fish_grok_using_subcommand agent; and not __fish_seen_subcommand_from stdio headless serve leader help" -l agent-profile -d 'Path to an agent profile file' -r -F
 complete -c grok -n "__fish_grok_using_subcommand agent; and not __fish_seen_subcommand_from stdio headless serve leader help" -l plugin-dir -d 'Load a plugin from this directory for this process only (repeatable). Highest-priority plugin scope; always trusted — hooks and MCP servers activate without a prompt. Used by the Agent SDKs to inject per-connection plugins' -r -f -a "(__fish_complete_directories)"
 complete -c grok -n "__fish_grok_using_subcommand agent; and not __fish_seen_subcommand_from stdio headless serve leader help" -l grok-ws-origin -r
@@ -360,7 +355,7 @@ complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcom
 complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from marketplace" -l debug -d 'Enable debug logging'
 complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from marketplace" -s h -l help -d 'Print help'
 complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from marketplace" -f -a "list" -d 'List configured marketplace sources and their plugins'
-complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from marketplace" -f -a "add" -d 'Add a marketplace source (git URL or GitHub shorthand)'
+complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from marketplace" -f -a "add" -d 'Add a marketplace source (git URL, GitHub shorthand, or local path)'
 complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from marketplace" -f -a "remove" -d 'Remove a marketplace source and uninstall its plugins'
 complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from marketplace" -f -a "update" -d 'Refresh marketplace source(s) and sync git caches'
 complete -c grok -n "__fish_grok_using_subcommand plugin; and __fish_seen_subcommand_from marketplace" -f -a "help" -d 'Print this message or the help of the given subcommand(s)'

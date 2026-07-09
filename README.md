@@ -9,6 +9,11 @@ macOS and NixOS configuration with [nix-darwin](https://github.com/LnL7/nix-darw
 - [Customization](#customization)
 - [Claude Config](#claude-config)
 - [Fish Config](#fish-config)
+- [tmux Config](#tmux-config)
+- [Helix Config](#helix-config)
+- [btop Config](#btop-config)
+- [Warp Config](#warp-config)
+- [yazi Config](#yazi-config)
 - [Commands](#commands)
 - [Structure](#structure)
 
@@ -214,6 +219,91 @@ The link command creates a symlink at `~/.config/tmux/tmux.conf`. If a non-symli
 
 ---
 
+## Helix Config
+
+Helix is installed by Nix, while the user Helix config is tracked in this repo as shared custom config and not linked by Home Manager. Link it after applying the Nix config:
+
+```bash
+./scripts/link-helix
+```
+
+Tracked files live under `custom/helix/`:
+
+- `config.toml`
+- `themes/`
+
+The link command creates symlinks at `~/.config/helix/config.toml` and `~/.config/helix/themes`. If a non-symlink file or directory already exists, it refuses to replace it. Use `--force` to move the existing path aside with a timestamped `.bak` suffix.
+
+```bash
+./scripts/link-helix --force
+```
+
+---
+
+## btop Config
+
+btop is installed by Nix, while the user btop config is tracked in this repo as shared custom config and not linked by Home Manager. Link it after applying the Nix config:
+
+```bash
+./scripts/link-btop
+```
+
+Tracked files live under `custom/btop/`:
+
+- `btop.conf`
+- `themes/`
+
+The link command creates symlinks at `~/.config/btop/btop.conf` and `~/.config/btop/themes`. If a non-symlink file or directory already exists, it refuses to replace it. Use `--force` to move the existing path aside with a timestamped `.bak` suffix.
+
+```bash
+./scripts/link-btop --force
+```
+
+---
+
+## Warp Config
+
+Warp is installed via Homebrew (cask), while the user Warp config is tracked in this repo as shared custom config and not linked by Home Manager. Link it after applying the Nix config:
+
+```bash
+./scripts/link-warp
+```
+
+Tracked files live under `custom/warp/`:
+
+- `settings.toml`
+- `themes/`
+
+The link command creates symlinks at `~/.warp/settings.toml` and `~/.warp/themes`. If a non-symlink file or directory already exists, it refuses to replace it. Use `--force` to move the existing path aside with a timestamped `.bak` suffix.
+
+```bash
+./scripts/link-warp --force
+```
+
+---
+
+## yazi Config
+
+yazi is installed by Nix, while the user yazi config is tracked in this repo as shared custom config and not linked by Home Manager. Link it after applying the Nix config:
+
+```bash
+./scripts/link-yazi
+```
+
+Tracked files live under `custom/yazi/`:
+
+- `yazi.toml`
+- `theme.toml`
+- `Catppuccin-mocha.tmTheme`
+
+The link command creates symlinks for each file into `~/.config/yazi/`. If a non-symlink file already exists, it refuses to replace it. Use `--force` to move the existing path aside with a timestamped `.bak` suffix.
+
+```bash
+./scripts/link-yazi --force
+```
+
+---
+
 ## Commands
 
 If flakes are not in nix.conf, prefix with `nix --extra-experimental-features 'nix-command flakes' run` instead of `nix run`.
@@ -248,5 +338,5 @@ hosts/nixos/      NixOS system config
 custom/           Repo-tracked configs not linked by Home Manager
 modules/darwin/   Darwin modules (casks, dock)
 modules/nixos/    NixOS modules (KDE, packages)
-modules/shared/   Shared config (git, ssh, helix, kitty, fish)
+modules/shared/   Shared config (git, ssh, kitty)
 ```

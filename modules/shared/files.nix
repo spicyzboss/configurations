@@ -33,12 +33,6 @@ in
     ".hushlogin" = {
       text = "";
     };
-    ".config/yazi/yazi.toml" = {
-      text = ''
-        [mgr]
-        show_hidden = true
-      '';
-    };
     ".config/git/100x.gitconfig" = {
       text = ''
         [user]

@@ -29,6 +29,8 @@ in
   homebrew = {
     enable = true;
     onActivation.cleanup = "uninstall";
+    taps   = [ "catppuccin/tap" ];
+    brews  = pkgs.callPackage ./brews.nix {};
     casks  = pkgs.callPackage ./casks.nix {};
     #masApps = {
     #  "hidden-bar"   = 1452453066;
@@ -81,14 +83,11 @@ in
         catppuccin = {
           flavor = "mocha";
           bat.enable = true;
-          btop.enable = true;
           delta.enable = true;
           fzf.enable = true;
-          helix.enable = true;
           kitty.enable = true;
           lazygit.enable = true;
           starship.enable = true;
-          yazi.enable = true;
         };
         manual.manpages.enable = false;
       };
@@ -100,7 +99,7 @@ in
     entries  = [
       { path = "/Applications/Google Chrome.app"; }
       { path = "/System/Applications/Apps.app"; }
-      { path = "/Applications/Nix Apps/kitty.app"; }
+      { path = "/Applications/Warp.app"; }
       { path = "/Applications/Slack.app"; }
       { path = "/Applications/Claude.app"; }
       { path = "/System/Applications/Calendar.app"; }
