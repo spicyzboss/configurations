@@ -1,0 +1,77 @@
+#!/bin/sh
+set -eu
+
+usage() {
+  printf '%s\n' "Usage: $0 [--force] [name...]"
+  printf '%s\n' "Runs every scripts/link-* script, or only the named ones (e.g. tmux zellij)."
+}
+
+die() {
+  printf '%s\n' "$1" >&2
+  exit 1
+}
+
+FORCE=0
+NAMES=""
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --force|-f)
+      FORCE=1
+      ;;
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    -*)
+      usage >&2
+      die "Unknown argument: $1"
+      ;;
+    *)
+      NAMES="$NAMES $1"
+      ;;
+  esac
+  shift
+done
+
+SCRIPT_DIR="$(CDPATH= cd "$(dirname "$0")" && pwd)"
+SELF="$SCRIPT_DIR/$(basename "$0")"
+
+SCRIPTS=""
+
+if [ -n "$NAMES" ]; then
+  for name in $NAMES; do
+    script="$SCRIPT_DIR/link-$name"
+    [ -f "$script" ] || die "No such link script: $script"
+    SCRIPTS="$SCRIPTS $script"
+  done
+else
+  for script in "$SCRIPT_DIR"/link-*; do
+    [ -f "$script" ] || continue
+    [ "$script" != "$SELF" ] || continue
+    SCRIPTS="$SCRIPTS $script"
+  done
+fi
+
+[ -n "$SCRIPTS" ] || die "No link scripts found in $SCRIPT_DIR"
+
+FAILED=""
+
+for script in $SCRIPTS; do
+  name="${script##*/link-}"
+  printf '%s\n' "==> $name"
+
+  if [ "$FORCE" -eq 1 ]; then
+    sh "$script" --force || FAILED="$FAILED $name"
+  else
+    sh "$script" || FAILED="$FAILED $name"
+  fi
+
+  printf '\n'
+done
+
+if [ -n "$FAILED" ]; then
+  die "Failed:$FAILED"
+fi
+
+printf '%s\n' "All configs linked."

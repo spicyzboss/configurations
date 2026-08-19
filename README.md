@@ -7,6 +7,7 @@ macOS and NixOS configuration with [nix-darwin](https://github.com/LnL7/nix-darw
 - [Fresh Mac Setup (Apple Silicon)](#fresh-mac-setup-apple-silicon)
 - [NixOS Setup (x86_64)](#nixos-setup-x86_64)
 - [Customization](#customization)
+- [Linking Configs](#linking-configs)
 - [Claude Config](#claude-config)
 - [Fish Config](#fish-config)
 - [tmux Config](#tmux-config)
@@ -150,6 +151,25 @@ The config uses username `spicyz`. For a different user:
 
 - **macOS**: Change `user` in `flake.nix` and `hosts/darwin/default.nix`
 - **NixOS**: Change `user` in `flake.nix` and `hosts/nixos/default.nix`
+
+---
+
+## Linking Configs
+
+Every `custom/` config is linked by its own script under `scripts/`. To run them all at once:
+
+```bash
+./scripts/link-all
+```
+
+It runs each `scripts/link-*` script in turn, keeps going when one fails, and exits non-zero with a summary of what failed. Pass `--force` to forward that flag to every script, or name specific configs to link only those:
+
+```bash
+./scripts/link-all --force
+./scripts/link-all tmux zellij
+```
+
+New `scripts/link-<tool>` scripts are picked up automatically; no edit to `link-all` is needed.
 
 ---
 
