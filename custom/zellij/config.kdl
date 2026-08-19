@@ -1,22 +1,19 @@
-// Theme
-// Plain `zellij` attaches to this session instead of creating a randomly named
-// one each time, so every window lands in the same workspace.
+// Session: plain `zellij` attaches to this one workspace instead of creating a
+// randomly named session each time.
 session_name "main"
 attach_to_session true
 
-// Fallback for terminals that do not answer the palette query (CSI 2031 / DSR 997);
-// where they do, theme_dark/theme_light take over.
+// Theme: theme_dark/theme_light apply when the terminal answers the palette
+// query (CSI 2031 / DSR 997); `theme` is the fallback when it does not.
 theme "catppuccin-mocha"
 theme_dark "catppuccin-mocha"
 theme_light "catppuccin-latte"
 
-// General
-default_layout "compact"
-mouse_mode true
-scroll_buffer_size 100000
-copy_on_select false
-styled_underlines true
-show_release_notes false
+// Only what differs from zellij's defaults, so this file stays readable.
+default_layout "compact"     // default "default"
+scroll_buffer_size 100000    // default 10000
+copy_on_select false         // default true
+show_release_notes false     // default true
 
 ui {
     pane_frames {
