@@ -33,6 +33,45 @@ right = [{ context_chip = "date" }, { context_chip = "time_12" }]
 rules_enabled = false
 warp_drive_context_enabled = false
 
+[agents.execution_profiles]
+
+[agents.execution_profiles.default]
+apply_code_diffs = "agent_decides"
+ask_user_question = "always_ask"
+autosync_plans_to_warp_drive = true
+command_allowlist = []
+command_denylist = [
+  'bash(\s.*)?',
+  'fish(\s.*)?',
+  'pwsh(\s.*)?',
+  'sh(\s.*)?',
+  'zsh(\s.*)?',
+  'curl(\s.*)?',
+  'eval(\s.*)?',
+  'exec(\s.*)?',
+  'source(\s.*)?',
+  'wget(\s.*)?',
+  'dig(\s.*)?',
+  'nslookup(\s.*)?',
+  'host(\s.*)?',
+  'ssh(\s.*)?',
+  'scp(\s.*)?',
+  'rsync(\s.*)?',
+  'telnet(\s.*)?',
+  'rm(\s.*)?',
+]
+computer_use = "never"
+directory_allowlist = []
+execute_commands = "always_ask"
+mcp_allowlist = []
+mcp_denylist = []
+mcp_permissions = "agent_decides"
+name = "Default"
+read_files = "agent_decides"
+run_agents = "always_ask"
+web_search_enabled = true
+write_to_pty = "always_ask"
+
 [account]
 is_settings_sync_enabled = true
 
@@ -74,25 +113,28 @@ hide_title_bar_search_bar = true
 show_panel_in_restored_windows = true
 
 [appearance.window]
-zoom_level = 100
+zoom_level = 80
 left_panel_visibility_across_tabs = true
+override_opacity = 100
+override_blur = 64
 
 [appearance.icon]
-app_icon = "glow"
+app_icon = "aurora"
+show_dock_icon = true
 
 [appearance.tabs]
 directory_tab_colors = { "/Users/spicyz/Documents/work" = "suppressed" }
 workspace_decoration_visibility = "on_hover"
 
 [appearance.full_screen_apps]
-alt_screen_padding = { custom = { uniform_padding = 16.0 } }
+alt_screen_padding = { custom = { uniform_padding = 32.0 } }
 
 [notifications]
 toast_duration_secs = 8
 
 [notifications.preferences]
 is_agent_task_completed_enabled = true
-is_long_running_enabled = false
+is_long_running_enabled = true
 is_needs_attention_enabled = true
 is_password_prompt_enabled = true
 long_running_threshold = 30
@@ -120,7 +162,7 @@ show_changelog_after_update = false
 quit_on_last_window_closed = true
 snackbar_enabled = false
 default_session_mode = "tab_config"
-show_warning_before_quitting = false
+show_warning_before_quitting = true
 
 [warp_drive]
 enabled = false
