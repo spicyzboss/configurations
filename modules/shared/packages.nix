@@ -44,6 +44,7 @@ let
     unzip
     uv
     yazi
+    zellij
     zig
     zls
     zip

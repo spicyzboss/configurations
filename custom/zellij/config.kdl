@@ -1,0 +1,37 @@
+// Theme
+theme "catppuccin-mocha"
+
+// General
+default_layout "compact"
+mouse_mode true
+scroll_buffer_size 50000
+copy_on_select false
+styled_underlines true
+show_release_notes false
+
+ui {
+    pane_frames {
+        rounded_corners true
+        hide_session_name true
+    }
+}
+
+// Prefix: C-a (tmux mode), mirroring ~/.config/tmux/tmux.conf
+keybinds {
+    unbind "Ctrl b"
+
+    shared_except "tmux" "locked" {
+        bind "Ctrl a" { SwitchToMode "Tmux"; }
+    }
+
+    tmux {
+        // Send a literal C-a through to the running program
+        bind "Ctrl a" { Write 1; SwitchToMode "Normal"; }
+
+        // Vim-style pane resizing, sticky so it repeats
+        bind "H" { Resize "Increase Left"; }
+        bind "J" { Resize "Increase Down"; }
+        bind "K" { Resize "Increase Up"; }
+        bind "L" { Resize "Increase Right"; }
+    }
+}

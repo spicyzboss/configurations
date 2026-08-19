@@ -11,6 +11,7 @@ macOS and NixOS configuration with [nix-darwin](https://github.com/LnL7/nix-darw
 - [Claude Config](#claude-config)
 - [Fish Config](#fish-config)
 - [tmux Config](#tmux-config)
+- [zellij Config](#zellij-config)
 - [Helix Config](#helix-config)
 - [btop Config](#btop-config)
 - [Warp Config](#warp-config)
@@ -236,6 +237,26 @@ The link command creates a symlink at `~/.config/tmux/tmux.conf`. If a non-symli
 
 ```bash
 ./scripts/link-tmux --force
+```
+
+---
+
+## zellij Config
+
+zellij is installed by Nix, while the user zellij config is tracked in this repo as shared custom config and not linked by Home Manager. Link it after applying the Nix config:
+
+```bash
+./scripts/link-zellij
+```
+
+Tracked files live under `custom/zellij/`:
+
+- `config.kdl`
+
+The link command creates a symlink at `~/.config/zellij/config.kdl`. If a non-symlink file already exists, it refuses to replace it. Use `--force` to move the existing path aside with a timestamped `.bak` suffix.
+
+```bash
+./scripts/link-zellij --force
 ```
 
 ---
