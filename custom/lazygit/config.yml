@@ -1,0 +1,7 @@
+# Repo-tracked lazygit config. Link with ./scripts/link-lazygit.
+#
+# The catppuccin theme is layered on top of this file: config.fish sets
+# LG_CONFIG_FILE to this file plus themes/current.yml, a symlink the appearance
+# handler flips between themes/mocha.yml and themes/latte.yml.
+gui:
+  nerdFontsVersion: "3"

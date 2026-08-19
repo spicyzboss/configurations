@@ -15,6 +15,7 @@ macOS and NixOS configuration with [nix-darwin](https://github.com/LnL7/nix-darw
 - [tmux Config](#tmux-config)
 - [zellij Config](#zellij-config)
 - [Helix Config](#helix-config)
+- [lazygit Config](#lazygit-config)
 - [btop Config](#btop-config)
 - [Warp Config](#warp-config)
 - [yazi Config](#yazi-config)
@@ -272,6 +273,8 @@ This is macOS-only; elsewhere the prompt falls back to `~/.config/starship.toml`
 
 The same handler exports `BAT_THEME`, which covers two more tools: bat uses it directly, and delta infers both its syntax theme and its light/dark diff colors from it. bat is also configured with `--theme=auto` plus `--theme-dark`/`--theme-light` in Nix, so it stays correct in shells that never run this handler.
 
+It also flips the theme symlinks for btop and lazygit, neither of which can follow the appearance on its own.
+
 Tools that follow the appearance on their own need nothing here: kitty, zellij, helix, yazi, Warp and fish all resolve a dark and a light theme themselves.
 
 Use `theme` to inspect or override it:
@@ -328,6 +331,25 @@ The link command creates a symlink at `~/.config/zellij/config.kdl`. If a non-sy
 ```bash
 ./scripts/link-zellij --force
 ```
+
+---
+
+## lazygit Config
+
+lazygit is installed by Nix, while its config is tracked in this repo and not linked by Home Manager. Link it after applying the Nix config:
+
+```bash
+./scripts/link-lazygit
+```
+
+Tracked files live under `custom/lazygit/`:
+
+- `config.yml`
+- `themes/mocha.yml`, `themes/latte.yml` (Catppuccin, blue accent)
+
+lazygit has no include mechanism, so the theme is layered instead: `config.fish` sets `LG_CONFIG_FILE` to `config.yml` plus `themes/current.yml`, and `current.yml` is a machine-local symlink the appearance handler flips between the two flavors. lazygit reads it at startup and has no reload, so a change lands on the next launch.
+
+The catppuccin source ships fourteen accents; swap the file contents to change accent.
 
 ---
 

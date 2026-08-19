@@ -133,6 +133,8 @@ if status is-interactive
     end
 
     set -gx fish_greeting ""
+    # base config plus the theme symlink the appearance handler flips
+    set -gx LG_CONFIG_FILE $HOME/.config/lazygit/config.yml,$HOME/.config/lazygit/themes/current.yml
     set -gx BUN_INSTALL $HOME/.bun
     set -gx GOPATH $HOME/go
     set -gx PYENV_ROOT $HOME/.pyenv

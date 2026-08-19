@@ -34,4 +34,16 @@ function __apply_appearance --argument-names mode \
         command pkill -USR2 -x btop 2>/dev/null
         or true # no btop running is the normal case, not a failure
     end
+
+    # lazygit reads LG_CONFIG_FILE at startup and has no reload, so flipping the
+    # symlink is enough: the next lazygit launch picks it up.
+    set -l lg_flavor mocha
+    test $mode = light; and set lg_flavor latte
+
+    set -l lg_link $HOME/.config/lazygit/themes/current.yml
+    set -l lg_want $HOME/.config/lazygit/themes/$lg_flavor.yml
+
+    if test (path resolve $lg_link) != (path resolve $lg_want)
+        command ln -sfn $lg_flavor.yml $lg_link 2>/dev/null
+    end
 end
