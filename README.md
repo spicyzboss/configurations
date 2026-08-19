@@ -365,7 +365,9 @@ Tracked files live under `custom/btop/`:
 - `btop.conf`
 - `themes/` (`catppuccin_mocha.theme`, `catppuccin_latte.theme`)
 
-`btop.conf` points `color_theme` at `~/.config/btop/themes/current.theme`, a machine-local symlink the fish appearance handler flips between the two themes. It has to live *inside* `themes/`: btop only loads a theme whose path it found by scanning the theme directories, and silently falls back to its dark built-in theme for a path it did not discover. That is also why `link-btop` links the theme files individually instead of symlinking the whole directory. The handler then sends `SIGUSR2`, which btop handles by re-reading its config and re-applying the theme, so a running btop switches live rather than waiting for a relaunch. The link command seeds the symlink if it is missing.
+`btop.conf` points `color_theme` at `~/.config/btop/themes/current.theme`, a machine-local symlink the fish appearance handler flips between the two themes. It has to live *inside* `themes/`: btop only loads a theme whose path it found by scanning the theme directories, and silently falls back to its dark built-in theme for a path it did not discover. That is also why `link-btop` links the theme files individually instead of symlinking the whole directory. The handler then sends `SIGUSR2`, which btop handles by re-reading its config and re-applying the theme.
+
+That signal only goes out when a fish shell reaches a prompt, or runs a command. A shell running btop in the foreground does neither until btop exits, so **toggling the appearance while btop is on screen will not change it** — btop keeps the theme it started with. It is correct on every launch, and a running instance updates only if some other shell reaches a prompt in the meantime. Making this instant would need something watching outside the shell, such as a kitty `watcher` or a launchd agent; neither is worth the machinery for one tool. The link command seeds the symlink if it is missing.
 
 Note that btop rewrites `btop.conf` when it exits. Since that path is a symlink into this repo, quitting btop can show up as an uncommitted change here.
 
