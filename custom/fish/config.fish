@@ -96,8 +96,12 @@ if status is-interactive
     if command -q starship; and test (uname) = Darwin
         set -g __starship_appearance_cache $HOME/.cache/starship-appearance
 
-        function __starship_follow_appearance --on-event fish_prompt \
-            --description "Point STARSHIP_CONFIG at the dark or light palette"
+        # fish_prompt covers terminals that render the shell's prompt. Warp draws its
+        # own prompt and may never fire it, so also hook the command events it does
+        # drive, which keeps bat/delta/btop correct there.
+        function __starship_follow_appearance \
+            --on-event fish_prompt --on-event fish_preexec --on-event fish_postexec \
+            --description "Point the appearance-following tools at dark or light"
 
             set -q __starship_theme_override; and return
 
