@@ -1,4 +1,12 @@
 // Theme
+// Plain `zellij` attaches to this session instead of creating a randomly named
+// one each time, so every window lands in the same workspace.
+session_name "main"
+attach_to_session true
+
+// Fallback for terminals that do not answer the palette query (CSI 2031 / DSR 997);
+// where they do, theme_dark/theme_light take over.
+theme "catppuccin-mocha"
 theme_dark "catppuccin-mocha"
 theme_light "catppuccin-latte"
 
