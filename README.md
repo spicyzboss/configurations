@@ -209,7 +209,8 @@ Tracked files live under `custom/fish/`:
 - `config.fish`
 - `functions/`
 - `completions/`
-- `themes/`
+
+Themes are not tracked here. They come from the `catppuccin/fish` plugin listed in `~/.config/fish/fish_plugins`; run `fisher update` to install them. The link command applies `catppuccin-mocha` once the plugin has provided it.
 
 The link command creates symlinks into `~/.config/fish` and leaves mutable Fish state like `fish_variables` alone. If a non-symlink file or directory already exists, it refuses to replace it. Use `--force` to move the existing path aside with a timestamped `.bak` suffix.
 
