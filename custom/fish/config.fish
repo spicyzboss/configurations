@@ -88,6 +88,40 @@ if status is-interactive
         starship init fish | source
     end
 
+    # Follow the OS appearance for the starship palette, since starship has no
+    # native light/dark switching (starship/starship#6991). Reading the cache is
+    # forkless and the refresh is backgrounded, so a prompt costs ~0.5ms instead
+    # of the ~5ms a synchronous `defaults read` would add; the cost is that an
+    # appearance change lands on the next prompt. `theme` overrides this.
+    if command -q starship; and test (uname) = Darwin
+        set -g __starship_appearance_cache $HOME/.cache/starship-appearance
+
+        function __starship_follow_appearance --on-event fish_prompt \
+            --description "Point STARSHIP_CONFIG at the dark or light palette"
+
+            set -q __starship_theme_override; and return
+
+            if test -r $__starship_appearance_cache
+                read -z -l appearance <$__starship_appearance_cache
+
+                if string match -q '*Dark*' -- $appearance
+                    set -gx STARSHIP_CONFIG $HOME/.config/starship/dark.toml
+                else
+                    set -gx STARSHIP_CONFIG $HOME/.config/starship/light.toml
+                end
+            end
+
+            # Written via a temp file so a half-finished refresh is never read as
+            # "light". An absent AppleInterfaceStyle key means light, so a failed
+            # read producing an empty file is the correct answer, not an error.
+            begin
+                command defaults read -g AppleInterfaceStyle >$__starship_appearance_cache.new 2>/dev/null
+                command mv -f $__starship_appearance_cache.new $__starship_appearance_cache
+            end &
+            disown 2>/dev/null
+        end
+    end
+
     if set -q KITTY_INSTALLATION_DIR
         set --global KITTY_SHELL_INTEGRATION "no-rc no-cursor"
         source "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_conf.d/kitty-shell-integration.fish"

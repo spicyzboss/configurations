@@ -62,6 +62,12 @@ link_path() {
   printf '%s\n' "Linked $dest -> $src"
 }
 
-link_path "$SOURCE_DIR/starship.toml" "$TARGET_DIR/starship.toml"
+mkdir -p "$TARGET_DIR/starship"
+
+link_path "$SOURCE_DIR/dark.toml" "$TARGET_DIR/starship/dark.toml"
+link_path "$SOURCE_DIR/light.toml" "$TARGET_DIR/starship/light.toml"
+
+# Fallback for shells that do not set STARSHIP_CONFIG
+link_path "$SOURCE_DIR/dark.toml" "$TARGET_DIR/starship.toml"
 
 printf '%s\n' "starship config linked."

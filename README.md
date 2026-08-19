@@ -259,11 +259,27 @@ starship is installed by Nix, while the prompt config is tracked in this repo as
 
 Tracked files live under `custom/starship/`:
 
-- `starship.toml`
+- `dark.toml` (Catppuccin Mocha)
+- `light.toml` (Catppuccin Latte)
 
-The catppuccin mocha palette is written out in the file itself rather than injected by the catppuccin module, so editing the prompt no longer needs a rebuild.
+Both palettes are written out in the files themselves rather than injected by the catppuccin module, so editing the prompt no longer needs a rebuild.
 
-The link command creates a symlink at `~/.config/starship.toml`. If a non-symlink file already exists, it refuses to replace it. Use `--force` to move the existing path aside with a timestamped `.bak` suffix.
+### Following the OS appearance
+
+starship has no native light/dark palette switching ([starship#6991](https://github.com/starship/starship/issues/6991)), so `config.fish` installs a `fish_prompt` handler that points `STARSHIP_CONFIG` at `dark.toml` or `light.toml`. It reads a cached appearance without forking and refreshes that cache in the background, which costs a prompt about 0.5ms rather than the ~5ms a synchronous `defaults read` would add. The trade is that an appearance change lands on the next prompt rather than the current one. The cache is written through a temp file, so a half-finished refresh is never read as light.
+
+This is macOS-only; elsewhere the prompt falls back to `~/.config/starship.toml`, which is linked to `dark.toml`.
+
+Use `theme` to inspect or override it:
+
+```bash
+theme          # show the active palette and whether it is following the OS
+theme light    # pin this shell to light
+theme dark     # pin this shell to dark
+theme auto     # follow the OS again
+```
+
+The link command creates symlinks at `~/.config/starship/dark.toml`, `~/.config/starship/light.toml`, and `~/.config/starship.toml`. If a non-symlink file already exists, it refuses to replace it. Use `--force` to move the existing path aside with a timestamped `.bak` suffix.
 
 ```bash
 ./scripts/link-starship --force
