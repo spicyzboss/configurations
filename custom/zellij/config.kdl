@@ -15,12 +15,14 @@ scroll_buffer_size 100000    // default 10000
 copy_on_select false         // default true
 show_release_notes false     // default true
 show_startup_tips false      // default true
+simplified_ui true
+pane_frames false
 
 ui {
-    pane_frames {
-        rounded_corners true
-        hide_session_name true
-    }
+    // pane_frames {
+    //     rounded_corners true
+    //     hide_session_name true
+    // }
 }
 
 // Prefix: C-a (tmux mode), mirroring ~/.config/tmux/tmux.conf
