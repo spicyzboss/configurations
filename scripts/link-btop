@@ -65,4 +65,11 @@ link_path() {
 link_path "$SOURCE_DIR/btop.conf" "$TARGET_DIR/btop.conf"
 link_path "$SOURCE_DIR/themes" "$TARGET_DIR/themes"
 
+# btop.conf points color_theme at this symlink; the fish appearance handler flips
+# it. Seed it here so a fresh machine has a theme before any prompt has run.
+if [ ! -e "$TARGET_DIR/current.theme" ]; then
+  ln -s "$TARGET_DIR/themes/catppuccin_mocha.theme" "$TARGET_DIR/current.theme"
+  printf '%s\n' "Seeded $TARGET_DIR/current.theme -> catppuccin_mocha.theme"
+fi
+
 printf '%s\n' "btop config linked."

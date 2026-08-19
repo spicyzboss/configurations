@@ -270,6 +270,10 @@ starship has no native light/dark palette switching ([starship#6991](https://git
 
 This is macOS-only; elsewhere the prompt falls back to `~/.config/starship.toml`, which is linked to `dark.toml`.
 
+The same handler exports `BAT_THEME`, which covers two more tools: bat uses it directly, and delta infers both its syntax theme and its light/dark diff colors from it. bat is also configured with `--theme=auto` plus `--theme-dark`/`--theme-light` in Nix, so it stays correct in shells that never run this handler.
+
+Tools that follow the appearance on their own need nothing here: kitty, zellij, helix, yazi, Warp and fish all resolve a dark and a light theme themselves.
+
 Use `theme` to inspect or override it:
 
 ```bash
@@ -359,7 +363,9 @@ btop is installed by Nix, while the user btop config is tracked in this repo as 
 Tracked files live under `custom/btop/`:
 
 - `btop.conf`
-- `themes/`
+- `themes/` (`catppuccin_mocha.theme`, `catppuccin_latte.theme`)
+
+`btop.conf` points `color_theme` at `~/.config/btop/current.theme`, a machine-local symlink the fish appearance handler flips between the two themes. btop reads `color_theme` once at startup, so a running btop keeps the theme it launched with; the next launch picks up the change. The link command seeds the symlink if it is missing.
 
 The link command creates symlinks at `~/.config/btop/btop.conf` and `~/.config/btop/themes`. If a non-symlink file or directory already exists, it refuses to replace it. Use `--force` to move the existing path aside with a timestamped `.bak` suffix.
 

@@ -105,9 +105,9 @@ if status is-interactive
                 read -z -l appearance <$__starship_appearance_cache
 
                 if string match -q '*Dark*' -- $appearance
-                    set -gx STARSHIP_CONFIG $HOME/.config/starship/dark.toml
+                    __apply_appearance dark
                 else
-                    set -gx STARSHIP_CONFIG $HOME/.config/starship/light.toml
+                    __apply_appearance light
                 end
             end
 

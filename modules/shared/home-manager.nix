@@ -78,7 +78,16 @@ in
     };
   };
 
-  bat.enable = true;
+  bat = {
+    enable = true;
+    config = {
+      # catppuccin's module pins --theme; auto resolves via theme-dark/theme-light
+      # instead, so bat follows the terminal background outside fish too
+      theme = lib.mkForce "auto";
+      theme-dark = "Catppuccin Mocha";
+      theme-light = "Catppuccin Latte";
+    };
+  };
 
   fzf = {
     enable = true;

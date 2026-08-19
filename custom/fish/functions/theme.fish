@@ -1,19 +1,19 @@
-function theme --description "Show or override the starship palette that follows the OS appearance"
-    set -l config_dir $HOME/.config/starship
-
+function theme --description "Show or override the theme that follows the OS appearance"
     switch "$argv[1]"
         case '' show
             set -l following auto
             set -q __starship_theme_override; and set following "forced $__starship_theme_override"
 
-            if set -q STARSHIP_CONFIG
-                echo (path basename $STARSHIP_CONFIG | string replace .toml '')" ($following)"
-            else
-                echo "default ($following)"
-            end
+            set -l palette default
+            set -q STARSHIP_CONFIG; and set palette (path basename $STARSHIP_CONFIG | string replace .toml '')
+
+            echo "$palette ($following)"
+            echo "  starship  "(set -q STARSHIP_CONFIG; and echo $STARSHIP_CONFIG; or echo "~/.config/starship.toml")
+            echo "  bat/delta "(set -q BAT_THEME; and echo $BAT_THEME; or echo "(BAT_THEME unset)")
+            echo "  btop      "(path basename (path resolve $HOME/.config/btop/current.theme 2>/dev/null) 2>/dev/null)
         case dark light
             set -gx __starship_theme_override $argv[1]
-            set -gx STARSHIP_CONFIG $config_dir/$argv[1].toml
+            __apply_appearance $argv[1]
         case auto
             set -e __starship_theme_override
         case '*'
