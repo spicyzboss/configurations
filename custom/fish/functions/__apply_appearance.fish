@@ -24,8 +24,8 @@ function __apply_appearance --argument-names mode \
     # Only on a change, so the prompt does not fork on every render.
     if test "$flavor" != "$__appearance_btop_flavor"
         set -g __appearance_btop_flavor $flavor
-        command ln -sfn $HOME/.config/btop/themes/$flavor.theme \
-            $HOME/.config/btop/current.theme 2>/dev/null
+        command ln -sfn $flavor.theme \
+            $HOME/.config/btop/themes/current.theme 2>/dev/null
         command pkill -USR2 -x btop 2>/dev/null
         or true # no btop running is the normal case, not a failure
     end

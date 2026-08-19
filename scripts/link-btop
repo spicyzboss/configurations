@@ -63,13 +63,20 @@ link_path() {
 }
 
 link_path "$SOURCE_DIR/btop.conf" "$TARGET_DIR/btop.conf"
-link_path "$SOURCE_DIR/themes" "$TARGET_DIR/themes"
+# btop only loads a theme whose path it discovered by scanning the theme dirs
+# (btop_theme.cpp updateThemes/setTheme), so themes/ must be a real directory
+# holding the switch symlink, not a symlink to the repo.
+mkdir -p "$TARGET_DIR/themes"
+
+for theme in "$SOURCE_DIR"/themes/*.theme; do
+  link_path "$theme" "$TARGET_DIR/themes/$(basename "$theme")"
+done
 
 # btop.conf points color_theme at this symlink; the fish appearance handler flips
 # it. Seed it here so a fresh machine has a theme before any prompt has run.
-if [ ! -e "$TARGET_DIR/current.theme" ]; then
-  ln -s "$TARGET_DIR/themes/catppuccin_mocha.theme" "$TARGET_DIR/current.theme"
-  printf '%s\n' "Seeded $TARGET_DIR/current.theme -> catppuccin_mocha.theme"
+if [ ! -e "$TARGET_DIR/themes/current.theme" ]; then
+  ln -s catppuccin_mocha.theme "$TARGET_DIR/themes/current.theme"
+  printf '%s\n' "Seeded $TARGET_DIR/themes/current.theme -> catppuccin_mocha.theme"
 fi
 
 printf '%s\n' "btop config linked."
