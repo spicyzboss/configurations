@@ -10,6 +10,8 @@ macOS and NixOS configuration with [nix-darwin](https://github.com/LnL7/nix-darw
 - [Linking Configs](#linking-configs)
 - [Claude Config](#claude-config)
 - [Fish Config](#fish-config)
+- [kitty Config](#kitty-config)
+- [starship Config](#starship-config)
 - [tmux Config](#tmux-config)
 - [zellij Config](#zellij-config)
 - [Helix Config](#helix-config)
@@ -217,6 +219,54 @@ The link command creates symlinks into `~/.config/fish` and leaves mutable Fish 
 
 ```bash
 ./scripts/link-fish --force
+```
+
+---
+
+## kitty Config
+
+kitty is installed by Nix, while the user kitty config is tracked in this repo as shared custom config and not linked by Home Manager. Link it after applying the Nix config:
+
+```bash
+./scripts/link-kitty
+```
+
+Tracked files live under `custom/kitty/`:
+
+- `kitty.conf`
+- `dark-theme.auto.conf` (Catppuccin Mocha)
+- `light-theme.auto.conf` (Catppuccin Latte)
+
+kitty picks `dark-theme.auto.conf` or `light-theme.auto.conf` on its own, following the OS appearance, and those colors replace whatever `kitty.conf` sets rather than layering on top. `kitty.conf` includes the dark file directly so there is still a theme when the OS reports no preference. To change a theme, edit these files; to change which theme is used for an appearance, swap the file contents.
+
+`~/.config/kitty/current-theme.conf` is written by `kitten themes` and is not tracked here.
+
+The link command creates symlinks at `~/.config/kitty/kitty.conf`, `dark-theme.auto.conf`, and `light-theme.auto.conf`. If a non-symlink path already exists, it refuses to replace it. Use `--force` to move the existing path aside with a timestamped `.bak` suffix.
+
+```bash
+./scripts/link-kitty --force
+```
+
+---
+
+## starship Config
+
+starship is installed by Nix, while the prompt config is tracked in this repo as shared custom config and not linked by Home Manager. Link it after applying the Nix config:
+
+```bash
+./scripts/link-starship
+```
+
+Tracked files live under `custom/starship/`:
+
+- `starship.toml`
+
+The catppuccin mocha palette is written out in the file itself rather than injected by the catppuccin module, so editing the prompt no longer needs a rebuild.
+
+The link command creates a symlink at `~/.config/starship.toml`. If a non-symlink file already exists, it refuses to replace it. Use `--force` to move the existing path aside with a timestamped `.bak` suffix.
+
+```bash
+./scripts/link-starship --force
 ```
 
 ---

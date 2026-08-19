@@ -36,6 +36,7 @@ let
     pandoc
     postgresql
     ripgrep
+    starship
     terraform
     tflint
     tmux
