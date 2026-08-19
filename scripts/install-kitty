@@ -1,0 +1,75 @@
+#!/bin/sh
+set -eu
+
+usage() {
+  printf '%s\n' "Usage: $0 [--force] [--version <x.y.z>]"
+  printf '%s\n' "Installs the official signed kitty build into /Applications."
+  printf '%s\n' ""
+  printf '%s\n' "kitty is not installed by Nix here: the nixpkgs build is ad-hoc signed,"
+  printf '%s\n' "and macOS refuses to deliver notifications from an app without a real"
+  printf '%s\n' "Developer ID. The Homebrew cask is unusable too, since it declares"
+  printf '%s\n' "'depends_on macos: :monterey', which Homebrew reads as an exact match."
+}
+
+die() {
+  printf '%s\n' "$1" >&2
+  exit 1
+}
+
+FORCE=0
+VERSION=""
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --force|-f) FORCE=1 ;;
+    --version)  shift; [ "$#" -gt 0 ] || die "--version needs a value"; VERSION="$1" ;;
+    --help|-h)  usage; exit 0 ;;
+    *) usage >&2; die "Unknown argument: $1" ;;
+  esac
+  shift
+done
+
+APP="/Applications/kitty.app"
+BIN_DIR="$HOME/.local/bin"
+
+installed_version() {
+  [ -x "$APP/Contents/MacOS/kitty" ] || return 1
+  "$APP/Contents/MacOS/kitty" --version 2>/dev/null | awk '{print $2}'
+}
+
+if CURRENT=$(installed_version); then
+  if [ "$FORCE" -eq 0 ] && [ -z "$VERSION" ]; then
+    printf '%s\n' "kitty $CURRENT already installed at $APP. Re-run with --force to reinstall."
+    exit 0
+  fi
+  if [ -n "$VERSION" ] && [ "$CURRENT" = "$VERSION" ] && [ "$FORCE" -eq 0 ]; then
+    printf '%s\n' "kitty $CURRENT already installed at $APP."
+    exit 0
+  fi
+fi
+
+command -v curl >/dev/null || die "curl is required"
+
+INSTALLER_ARGS="dest=/Applications launch=n"
+[ -n "$VERSION" ] && INSTALLER_ARGS="$INSTALLER_ARGS installer=version-$VERSION"
+
+printf '%s\n' "Installing kitty into /Applications from sw.kovidgoyal.net ..."
+# shellcheck disable=SC2086
+curl -fsSL https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin $INSTALLER_ARGS
+
+[ -d "$APP" ] || die "Installer finished but $APP is missing"
+
+# The official build is signed and notarized; a Developer ID is what makes macOS
+# deliver notifications at all. Refuse to continue if that is not what we got.
+if ! codesign -dv --verbose=2 "$APP" 2>&1 | grep -q "Authority=Developer ID Application"; then
+  die "$APP is not Developer ID signed - notifications will not work, aborting"
+fi
+
+mkdir -p "$BIN_DIR"
+for tool in kitty kitten; do
+  ln -sfn "$APP/Contents/MacOS/$tool" "$BIN_DIR/$tool"
+  printf '%s\n' "Linked $BIN_DIR/$tool -> $APP/Contents/MacOS/$tool"
+done
+
+printf '%s\n' "kitty $(installed_version) installed."
+printf '%s\n' "Quit any running kitty and relaunch it from /Applications."

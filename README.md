@@ -226,7 +226,19 @@ The link command creates symlinks into `~/.config/fish` and leaves mutable Fish 
 
 ## kitty Config
 
-kitty is installed by Nix, while the user kitty config is tracked in this repo as shared custom config and not linked by Home Manager. Link it after applying the Nix config:
+kitty is **not** installed by Nix. The nixpkgs build is ad-hoc signed, and macOS silently drops desktop notifications from any app without a real Developer ID, so Claude Code notifications and `kitten notify` never appear. The Homebrew cask is unusable for a different reason: it declares `depends_on macos: :monterey`, which Homebrew reads as an exact version match and refuses to install on anything newer.
+
+So kitty comes from the official signed and notarized build instead:
+
+```bash
+./scripts/install-kitty            # installs into /Applications, links kitty/kitten into ~/.local/bin
+./scripts/install-kitty --force    # reinstall / upgrade
+./scripts/install-kitty --version 0.48.2
+```
+
+The script refuses to finish if what it downloaded is not `Developer ID Application` signed, since that is the entire reason for not using Nix here. Updates are manual: re-run it.
+
+The config itself is tracked in this repo and linked separately:
 
 ```bash
 ./scripts/link-kitty

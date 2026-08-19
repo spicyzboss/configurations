@@ -28,7 +28,6 @@ let
     imagemagick
     jdk21
     jq
-    kitty
     myPython
     fastfetch
     nodejs_22
