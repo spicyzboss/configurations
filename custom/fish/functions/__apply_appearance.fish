@@ -22,10 +22,15 @@ function __apply_appearance --argument-names mode \
     # which re-runs init_config + Theme::setTheme (btop.cpp:323, 1140), so a
     # running btop switches live; without it the change lands on next launch.
     # Only on a change, so the prompt does not fork on every render.
-    if test "$flavor" != "$__appearance_btop_flavor"
-        set -g __appearance_btop_flavor $flavor
-        command ln -sfn $flavor.theme \
-            $HOME/.config/btop/themes/current.theme 2>/dev/null
+    # Compare against the symlink itself, not a remembered value: another shell or
+    # a `theme` override can move it, and a per-shell memo would then conclude there
+    # is nothing to do and leave it wrong. `path resolve` and `test` are builtins,
+    # so the check costs no fork; only an actual change does.
+    set -l link $HOME/.config/btop/themes/current.theme
+    set -l want $HOME/.config/btop/themes/$flavor.theme
+
+    if test (path resolve $link) != (path resolve $want)
+        command ln -sfn $flavor.theme $link 2>/dev/null
         command pkill -USR2 -x btop 2>/dev/null
         or true # no btop running is the normal case, not a failure
     end
