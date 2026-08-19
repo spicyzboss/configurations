@@ -9,10 +9,13 @@ function __apply_appearance --argument-names mode \
             set -gx STARSHIP_CONFIG $HOME/.config/starship/dark.toml
             # delta infers its own light/dark mode from BAT_THEME, so this covers both
             set -gx BAT_THEME 'Catppuccin Mocha'
+            # catppuccin's nix module pins this to mocha; ctrl-r would stay dark
+            set -gx FZF_DEFAULT_OPTS '--color bg:#1e1e2e,bg+:#313244,fg:#cdd6f4,fg+:#cdd6f4,header:#cba6f7,hl:#cba6f7,hl+:#cba6f7,info:#cba6f7,marker:#cba6f7,pointer:#cba6f7,prompt:#cba6f7,spinner:#f5e0dc'
         case light
             set flavor catppuccin_latte
             set -gx STARSHIP_CONFIG $HOME/.config/starship/light.toml
             set -gx BAT_THEME 'Catppuccin Latte'
+            set -gx FZF_DEFAULT_OPTS '--color bg:#eff1f5,bg+:#ccd0da,fg:#4c4f69,fg+:#4c4f69,header:#8839ef,hl:#8839ef,hl+:#8839ef,info:#8839ef,marker:#8839ef,pointer:#8839ef,prompt:#8839ef,spinner:#dc8a78'
         case '*'
             echo "__apply_appearance: expected dark or light, got '$mode'" >&2
             return 1

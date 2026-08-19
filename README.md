@@ -274,7 +274,7 @@ starship has no native light/dark palette switching ([starship#6991](https://git
 
 This is macOS-only; elsewhere the prompt falls back to `~/.config/starship.toml`, which is linked to `dark.toml`.
 
-The same handler exports `BAT_THEME`, which covers two more tools: bat uses it directly, and delta infers both its syntax theme and its light/dark diff colors from it. bat is also configured with `--theme=auto` plus `--theme-dark`/`--theme-light` in Nix, so it stays correct in shells that never run this handler.
+The same handler exports `BAT_THEME`, which covers two more tools: bat uses it directly, and delta infers both its syntax theme and its light/dark diff colors from it. It also exports `FZF_DEFAULT_OPTS`, since catppuccin's Nix module pins fzf to mocha and the `ctrl-r` history widget would otherwise stay dark in light mode. bat is also configured with `--theme=auto` plus `--theme-dark`/`--theme-light` in Nix, so it stays correct in shells that never run this handler.
 
 It also flips the theme symlinks for btop and lazygit, neither of which can follow the appearance on its own.
 
