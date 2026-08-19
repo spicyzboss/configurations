@@ -365,7 +365,9 @@ Tracked files live under `custom/btop/`:
 - `btop.conf`
 - `themes/` (`catppuccin_mocha.theme`, `catppuccin_latte.theme`)
 
-`btop.conf` points `color_theme` at `~/.config/btop/current.theme`, a machine-local symlink the fish appearance handler flips between the two themes. btop reads `color_theme` once at startup, so a running btop keeps the theme it launched with; the next launch picks up the change. The link command seeds the symlink if it is missing.
+`btop.conf` points `color_theme` at `~/.config/btop/current.theme`, a machine-local symlink the fish appearance handler flips between the two themes. The handler then sends `SIGUSR2`, which btop handles by re-reading its config and re-applying the theme, so a running btop switches live rather than waiting for a relaunch. The link command seeds the symlink if it is missing.
+
+Note that btop rewrites `btop.conf` when it exits. Since that path is a symlink into this repo, quitting btop can show up as an uncommitted change here.
 
 The link command creates symlinks at `~/.config/btop/btop.conf` and `~/.config/btop/themes`. If a non-symlink file or directory already exists, it refuses to replace it. Use `--force` to move the existing path aside with a timestamped `.bak` suffix.
 

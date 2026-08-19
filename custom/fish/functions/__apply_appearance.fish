@@ -18,12 +18,15 @@ function __apply_appearance --argument-names mode \
             return 1
     end
 
-    # btop reads color_theme once at startup, so flip the symlink its config points
-    # at and the next btop launch matches. A running btop keeps its current theme.
+    # btop resolves color_theme through this symlink. SIGUSR2 sets reload_conf,
+    # which re-runs init_config + Theme::setTheme (btop.cpp:323, 1140), so a
+    # running btop switches live; without it the change lands on next launch.
     # Only on a change, so the prompt does not fork on every render.
     if test "$flavor" != "$__appearance_btop_flavor"
         set -g __appearance_btop_flavor $flavor
         command ln -sfn $HOME/.config/btop/themes/$flavor.theme \
             $HOME/.config/btop/current.theme 2>/dev/null
+        command pkill -USR2 -x btop 2>/dev/null
+        or true # no btop running is the normal case, not a failure
     end
 end
