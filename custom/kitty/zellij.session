@@ -1,0 +1,7 @@
+# kitty startup session. Linked to ~/.config/kitty/ by ./scripts/link-kitty and
+# selected by `startup_session` in kitty.conf.
+#
+# This applies to the FIRST window of a kitty instance only: boss.py's
+# _new_os_window builds its session without default_session, so cmd+n, new tabs
+# and new windows still give a plain shell. `kitty <command>` also bypasses it.
+launch zellij attach --create main

@@ -237,6 +237,9 @@ Tracked files live under `custom/kitty/`:
 - `kitty.conf`
 - `dark-theme.auto.conf` (Catppuccin Mocha)
 - `light-theme.auto.conf` (Catppuccin Latte)
+- `zellij.session`
+
+`startup_session` points at `zellij.session`, so the first window of a kitty instance opens straight into `zellij attach --create main`. This applies to that first window only: kitty builds sessions for new OS windows without consulting `startup_session`, so `cmd+n`, new tabs and new windows still give a plain shell, as does `kitty <command>`.
 
 kitty picks `dark-theme.auto.conf` or `light-theme.auto.conf` on its own, following the OS appearance, and those colors replace whatever `kitty.conf` sets rather than layering on top. `kitty.conf` includes the dark file directly so there is still a theme when the OS reports no preference. To change a theme, edit these files; to change which theme is used for an appearance, swap the file contents.
 

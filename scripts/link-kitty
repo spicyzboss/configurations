@@ -65,5 +65,6 @@ link_path() {
 link_path "$SOURCE_DIR/kitty.conf" "$TARGET_DIR/kitty.conf"
 link_path "$SOURCE_DIR/dark-theme.auto.conf" "$TARGET_DIR/dark-theme.auto.conf"
 link_path "$SOURCE_DIR/light-theme.auto.conf" "$TARGET_DIR/light-theme.auto.conf"
+link_path "$SOURCE_DIR/zellij.session" "$TARGET_DIR/zellij.session"
 
 printf '%s\n' "kitty config linked."
