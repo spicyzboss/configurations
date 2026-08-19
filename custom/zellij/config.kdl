@@ -12,7 +12,7 @@ theme_light "catppuccin-latte"
 // Only what differs from zellij's defaults, so this file stays readable.
 default_layout "compact"     // default "default"
 scroll_buffer_size 100000    // default 10000
-copy_on_select false         // default true
+copy_on_select true          // default true
 show_release_notes false     // default true
 show_startup_tips false      // default true
 simplified_ui true
