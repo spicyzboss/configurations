@@ -18,12 +18,12 @@ show_startup_tips false      // default true
 simplified_ui true
 pane_frames false
 
-ui {
-    // pane_frames {
-    //     rounded_corners true
-    //     hide_session_name true
-    // }
-}
+// ui {
+//     pane_frames {
+//         rounded_corners true
+//         hide_session_name true
+//     }
+// }
 
 // Prefix: C-a (tmux mode), mirroring ~/.config/tmux/tmux.conf
 keybinds {
