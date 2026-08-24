@@ -29,13 +29,13 @@ pane_frames false
 keybinds {
     unbind "Ctrl b"
 
-    shared_except "tmux" "locked" {
-        bind "Ctrl a" { SwitchToMode "Tmux"; }
-    }
+    // shared_except "tmux" "locked" {
+    //     bind "Ctrl a" { SwitchToMode "Tmux"; }
+    // }
 
     tmux {
         // Send a literal C-a through to the running program
-        bind "Ctrl a" { Write 1; SwitchToMode "Normal"; }
+        // bind "Ctrl a" { Write 1; SwitchToMode "Normal"; }
 
         // Vim-style pane resizing, sticky so it repeats
         bind "H" { Resize "Increase Left"; }

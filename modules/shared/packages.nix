@@ -8,9 +8,9 @@ let
 
   # helix installed via `brew --HEAD` on darwin (modules/darwin/brews.nix) instead of nixpkgs
   linuxOnlyPackages = with pkgs; [ jetbrains.datagrip slack helix ];
+  # bun installed manually from the official release (nixpkgs stuck at 1.3.13; NixOS/nixpkgs#555390)
   basePackages = with pkgs; [
     btop
-    bun
     code-cursor
     coreutils
     delta

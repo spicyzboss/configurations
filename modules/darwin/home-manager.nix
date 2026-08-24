@@ -29,7 +29,10 @@ in
   homebrew = {
     enable = true;
     onActivation.cleanup = "uninstall";
-    taps   = [ "catppuccin/tap" ];
+    # nix-darwin's Brewfile must declare the taps nix-homebrew manages, or
+    # `onActivation.cleanup` untaps homebrew/cask and then uninstalls every
+    # declared cask it can no longer resolve.
+    taps   = builtins.attrNames config.nix-homebrew.taps ++ [ "catppuccin/tap" ];
     brews  = pkgs.callPackage ./brews.nix {};
     casks  = pkgs.callPackage ./casks.nix {};
     #masApps = {
