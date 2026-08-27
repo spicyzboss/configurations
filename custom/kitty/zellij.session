@@ -4,4 +4,12 @@
 # This applies to the FIRST window of a kitty instance only: boss.py's
 # _new_os_window builds its session without default_session, so cmd+n, new tabs
 # and new windows still give a plain shell. `kitty <command>` also bypasses it.
-launch zellij attach --create main
+#
+# Go through a login fish rather than exec'ing zellij directly. kitty.app is
+# started by LaunchServices, so its PATH is only
+#   /Applications/kitty.app/Contents/MacOS:/usr/bin:/bin:/usr/sbin:/sbin
+# and the zellij *server* inherits it. Interactive panes are unaffected (zellij
+# execs $SHELL by absolute path), but resurrected panes exec their `command=`
+# straight from that PATH, so `claude`, `bun` and friends came back "command not
+# found". A login fish rebuilds PATH before zellij ever starts.
+launch fish -l -c "exec zellij attach --create main"
