@@ -9,6 +9,12 @@ let
 in
 {
   catppuccin = {
+    # `enable` is becoming a global on/off switch and `autoEnable` the thing that
+    # enrolls every port. Today `enable` defaults to false and `autoEnable`
+    # inherits it, so only the ports named below are themed -- setting both
+    # explicitly keeps exactly that once the default flips.
+    enable = true;
+    autoEnable = false;
     flavor = "mocha";
     bat.enable = true;
     delta.enable = true;

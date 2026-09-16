@@ -59,21 +59,26 @@ in
         "/Users/${user}/.ssh/config_external"
       )
     ];
-    matchBlocks = {
+    # `matchBlocks` is a deprecated alias for `settings`. The two differ in more
+    # than name: matchBlocks took home-manager's camelCase options and translated
+    # them, while settings is freeform and takes the real ssh_config directive
+    # names. Translated per the module's own legacyBlockSettings mapping --
+    # hostname -> HostName, identitiesOnly -> IdentitiesOnly, and so on.
+    settings = {
       "*" = {
-        sendEnv = [ "LANG" "LC_*" ];
-        hashKnownHosts = true;
+        SendEnv = [ "LANG" "LC_*" ];
+        HashKnownHosts = true;
       };
       "github.com" = {
-        user = "git";
-        identitiesOnly = true;
-        identityFile = [ (sshPath "spicyzboss") ];
+        User = "git";
+        IdentitiesOnly = true;
+        IdentityFile = [ (sshPath "spicyzboss") ];
       };
       "github.100x" = {
-        hostname = "github.com";
-        user = "git";
-        identitiesOnly = true;
-        identityFile = [ (sshPath "boss-spicyz100x") ];
+        HostName = "github.com";
+        User = "git";
+        IdentitiesOnly = true;
+        IdentityFile = [ (sshPath "boss-spicyz100x") ];
       };
     };
   };

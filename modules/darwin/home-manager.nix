@@ -76,14 +76,22 @@ in
           };
         };
         programs = {} // import ../shared/home-manager.nix { inherit config pkgs lib; };
+        # Colima is NOT started at login. The VM ran a k3s cluster continuously and
+        # burned ~15h of CPU in under three days at 20-40% -- a control plane never
+        # idles, and on battery that is hours of runtime. Start it by hand when a
+        # container is actually needed:  colima start
         launchd.agents.colima = {
-          enable = true;
+          enable = false;
           config = {
             ProgramArguments = [ "${pkgs.colima}/bin/colima" "start" ];
-            RunAtLoad = true;
+            RunAtLoad = false;
           };
         };
         catppuccin = {
+          # See the note in modules/nixos/home-manager.nix: explicit so the
+          # coming default flip does not silently enroll every port.
+          enable = true;
+          autoEnable = false;
           flavor = "mocha";
           bat.enable = true;
           delta.enable = true;

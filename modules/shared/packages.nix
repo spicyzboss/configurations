@@ -44,7 +44,6 @@ let
     unzip
     uv
     yazi
-    zellij
     zig
     zls
     zip
@@ -53,7 +52,7 @@ let
     kubernetes-helm
   ];
   filteredPackages = basePackages
-    ++ lib.optionals (!pkgs.stdenv.isDarwin) linuxOnlyPackages
-    ++ lib.optionals (!pkgs.stdenv.isDarwin) myFonts;
+    ++ lib.optionals (!pkgs.stdenv.hostPlatform.isDarwin) linuxOnlyPackages
+    ++ lib.optionals (!pkgs.stdenv.hostPlatform.isDarwin) myFonts;
 in
 filteredPackages ++ myFonts

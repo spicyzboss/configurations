@@ -5,11 +5,12 @@
 # _new_os_window builds its session without default_session, so cmd+n, new tabs
 # and new windows still give a plain shell. `kitty <command>` also bypasses it.
 #
-# Go through a login fish rather than exec'ing zellij directly. kitty.app is
+# Go through a login fish rather than exec'ing tmux directly. kitty.app is
 # started by LaunchServices, so its PATH is only
 #   /Applications/kitty.app/Contents/MacOS:/usr/bin:/bin:/usr/sbin:/sbin
-# and the zellij *server* inherits it. Interactive panes are unaffected (zellij
-# execs $SHELL by absolute path), but resurrected panes exec their `command=`
-# straight from that PATH, so `claude`, `bun` and friends came back "command not
-# found". A login fish rebuilds PATH before zellij ever starts.
-launch fish -l -c "exec zellij attach --create main"
+# and whichever client starts the tmux *server* hands it that environment. Every
+# pane the server spawns later inherits it, so `claude`, `bun` and friends come
+# back "command not found". A login fish rebuilds PATH before tmux ever starts.
+#
+# `new-session -A` attaches to "main" when it exists and creates it otherwise.
+launch fish -l -c "exec tmux new-session -A -s main"

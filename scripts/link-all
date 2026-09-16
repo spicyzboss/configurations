@@ -3,7 +3,7 @@ set -eu
 
 usage() {
   printf '%s\n' "Usage: $0 [--force] [name...]"
-  printf '%s\n' "Runs every scripts/link-* script, or only the named ones (e.g. tmux zellij)."
+  printf '%s\n' "Runs every scripts/link-* script, or only the named ones (e.g. tmux kitty)."
 }
 
 die() {

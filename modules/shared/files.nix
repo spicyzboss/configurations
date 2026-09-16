@@ -4,6 +4,20 @@ let
   sshDir = "${config.home.homeDirectory}/.ssh";
   sshPath = path: "${sshDir}/${path}";
   keyNames = [ "spicyzboss" "boss-spicyz100x" ];
+
+  # catppuccin/tmux, pinned to the v2.3.0 release rather than the 2.1.3 nixpkgs
+  # currently packages. Linked below to the path upstream documents, so
+  # custom/tmux/tmux.conf keeps the stock `run` line and there is no clone to
+  # keep up to date.
+  tmuxCatppuccin = pkgs.tmuxPlugins.catppuccin.overrideAttrs (_: {
+    version = "2.3.0";
+    src = pkgs.fetchFromGitHub {
+      owner = "catppuccin";
+      repo = "tmux";
+      rev = "v2.3.0";
+      hash = "sha256-3CJRQCgS8NAN7vOLBjNGiHbGXTIrIyY/FLmfZrXcEYc=";
+    };
+  });
   generateKey = name: ''
     key_path="${sshDir}/${name}"
 
@@ -32,6 +46,9 @@ in
   files = {
     ".hushlogin" = {
       text = "";
+    };
+    ".config/tmux/plugins/catppuccin/tmux" = {
+      source = "${tmuxCatppuccin}/share/tmux-plugins/catppuccin";
     };
     ".config/git/100x.gitconfig" = {
       text = ''

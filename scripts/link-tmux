@@ -63,5 +63,15 @@ link_path() {
 }
 
 link_path "$SOURCE_DIR/tmux.conf" "$TARGET_DIR/tmux.conf"
+link_path "$SOURCE_DIR/flavor-mocha.conf" "$TARGET_DIR/flavor-mocha.conf"
+link_path "$SOURCE_DIR/flavor-latte.conf" "$TARGET_DIR/flavor-latte.conf"
+
+# tmux.conf sources this symlink for the catppuccin flavor; the fish appearance
+# handler flips it. Seed it here so a fresh machine has a theme before any
+# prompt has run.
+if [ ! -e "$TARGET_DIR/flavor.conf" ]; then
+  ln -s flavor-mocha.conf "$TARGET_DIR/flavor.conf"
+  printf '%s\n' "Seeded $TARGET_DIR/flavor.conf -> flavor-mocha.conf"
+fi
 
 printf '%s\n' "tmux config linked."

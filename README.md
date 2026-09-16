@@ -13,7 +13,6 @@ macOS and NixOS configuration with [nix-darwin](https://github.com/LnL7/nix-darw
 - [kitty Config](#kitty-config)
 - [starship Config](#starship-config)
 - [tmux Config](#tmux-config)
-- [zellij Config](#zellij-config)
 - [Helix Config](#helix-config)
 - [lazygit Config](#lazygit-config)
 - [btop Config](#btop-config)
@@ -170,7 +169,7 @@ It runs each `scripts/link-*` script in turn, keeps going when one fails, and ex
 
 ```bash
 ./scripts/link-all --force
-./scripts/link-all tmux zellij
+./scripts/link-all tmux kitty
 ```
 
 New `scripts/link-<tool>` scripts are picked up automatically; no edit to `link-all` is needed.
@@ -249,15 +248,15 @@ Tracked files live under `custom/kitty/`:
 - `kitty.conf`
 - `dark-theme.auto.conf` (Catppuccin Mocha)
 - `light-theme.auto.conf` (Catppuccin Latte)
-- `zellij.session`
+- `tmux.session`
 
-`startup_session` points at `zellij.session`, so the first window of a kitty instance opens straight into `zellij attach --create main`. This applies to that first window only: kitty builds sessions for new OS windows without consulting `startup_session`, so `cmd+n`, new tabs and new windows still give a plain shell, as does `kitty <command>`.
+`startup_session` points at `tmux.session`, so the first window of a kitty instance opens straight into `tmux new-session -A -s main`. This applies to that first window only: kitty builds sessions for new OS windows without consulting `startup_session`, so `cmd+n`, new tabs and new windows still give a plain shell, as does `kitty <command>`.
 
 kitty picks `dark-theme.auto.conf` or `light-theme.auto.conf` on its own, following the OS appearance, and those colors replace whatever `kitty.conf` sets rather than layering on top. `kitty.conf` includes the dark file directly so there is still a theme when the OS reports no preference. To change a theme, edit these files; to change which theme is used for an appearance, swap the file contents.
 
 `~/.config/kitty/current-theme.conf` is written by `kitten themes` and is not tracked here.
 
-The link command creates symlinks at `~/.config/kitty/kitty.conf`, `dark-theme.auto.conf`, and `light-theme.auto.conf`. If a non-symlink path already exists, it refuses to replace it. Use `--force` to move the existing path aside with a timestamped `.bak` suffix.
+The link command creates symlinks at `~/.config/kitty/kitty.conf`, `dark-theme.auto.conf`, `light-theme.auto.conf`, and `tmux.session`. If a non-symlink path already exists, it refuses to replace it. Use `--force` to move the existing path aside with a timestamped `.bak` suffix.
 
 ```bash
 ./scripts/link-kitty --force
@@ -288,9 +287,9 @@ This is macOS-only; elsewhere the prompt falls back to `~/.config/starship.toml`
 
 The same handler exports `BAT_THEME`, which covers two more tools: bat uses it directly, and delta infers both its syntax theme and its light/dark diff colors from it. It also exports `FZF_DEFAULT_OPTS`, since catppuccin's Nix module pins fzf to mocha and the `ctrl-r` history widget would otherwise stay dark in light mode. bat is also configured with `--theme=auto` plus `--theme-dark`/`--theme-light` in Nix, so it stays correct in shells that never run this handler.
 
-It also flips the theme symlinks for btop and lazygit, neither of which can follow the appearance on its own.
+It also flips the theme symlinks for btop, lazygit and tmux, none of which can follow the appearance on its own. For tmux it re-sources `tmux.conf` when it is called from inside a session, so a running server repaints instead of waiting for the next one.
 
-Tools that follow the appearance on their own need nothing here: kitty, zellij, helix, yazi, Warp and fish all resolve a dark and a light theme themselves.
+Tools that follow the appearance on their own need nothing here: kitty, helix, yazi, Warp and fish all resolve a dark and a light theme themselves.
 
 Use `theme` to inspect or override it:
 
@@ -311,7 +310,7 @@ The link command creates symlinks at `~/.config/starship/dark.toml`, `~/.config/
 
 ## tmux Config
 
-tmux is installed by Nix, while the user tmux config is tracked in this repo as shared custom config and not linked by Home Manager. Link it after applying the Nix config:
+tmux is installed by Nix and is the multiplexer kitty starts in; it replaced zellij. The user tmux config is tracked in this repo as shared custom config and not linked by Home Manager. Link it after applying the Nix config:
 
 ```bash
 ./scripts/link-tmux
@@ -320,31 +319,21 @@ tmux is installed by Nix, while the user tmux config is tracked in this repo as 
 Tracked files live under `custom/tmux/`:
 
 - `tmux.conf`
+- `flavor-mocha.conf`
+- `flavor-latte.conf`
 
-The link command creates a symlink at `~/.config/tmux/tmux.conf`. If a non-symlink file already exists, it refuses to replace it. Use `--force` to move the existing path aside with a timestamped `.bak` suffix.
+The prefix is `C-a`, panes and windows open in the current path, copy mode is vi-style, and copies reach the system clipboard as OSC 52 (`set-clipboard on`), which also works over SSH. `allow-passthrough on` is what lets yazi draw images through kitty's graphics protocol from inside a pane.
+
+### Theme
+
+The catppuccin theme is a Nix package, not a clone: `modules/shared/files.nix` pins [catppuccin/tmux](https://github.com/catppuccin/tmux) v2.3.0 (nixpkgs still carries 2.1.3) and Home Manager symlinks it to `~/.config/tmux/plugins/catppuccin/tmux`, the path upstream documents, so `tmux.conf` keeps the stock `run` line.
+
+tmux has no light/dark switching, so `tmux.conf` sources `~/.config/tmux/flavor.conf`, a symlink the fish appearance handler flips between `flavor-mocha.conf` and `flavor-latte.conf`. `link-tmux` seeds it to mocha so a fresh machine has a theme before any prompt has run.
+
+The link command creates symlinks at `~/.config/tmux/tmux.conf`, `flavor-mocha.conf`, and `flavor-latte.conf`. If a non-symlink file already exists, it refuses to replace it. Use `--force` to move the existing path aside with a timestamped `.bak` suffix.
 
 ```bash
 ./scripts/link-tmux --force
-```
-
----
-
-## zellij Config
-
-zellij is installed by Nix, while the user zellij config is tracked in this repo as shared custom config and not linked by Home Manager. Link it after applying the Nix config:
-
-```bash
-./scripts/link-zellij
-```
-
-Tracked files live under `custom/zellij/`:
-
-- `config.kdl`
-
-The link command creates a symlink at `~/.config/zellij/config.kdl`. If a non-symlink file already exists, it refuses to replace it. Use `--force` to move the existing path aside with a timestamped `.bak` suffix.
-
-```bash
-./scripts/link-zellij --force
 ```
 
 ---

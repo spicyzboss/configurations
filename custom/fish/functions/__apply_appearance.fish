@@ -49,4 +49,24 @@ function __apply_appearance --argument-names mode \
     if test (path resolve $lg_link) != (path resolve $lg_want)
         command ln -sfn $lg_flavor.yml $lg_link 2>/dev/null
     end
+
+    # tmux has no light/dark switching either. tmux.conf sources flavor.conf for
+    # the catppuccin flavor, so flipping the symlink and re-sourcing the config
+    # -- what `prefix r` does -- repaints a running server. Only from inside a
+    # session: `tmux source-file` outside one would spawn a server just to
+    # theme it.
+    set -l tmux_flavor mocha
+    test $mode = light; and set tmux_flavor latte
+
+    set -l tmux_link $HOME/.config/tmux/flavor.conf
+    set -l tmux_want $HOME/.config/tmux/flavor-$tmux_flavor.conf
+
+    if test (path resolve $tmux_link) != (path resolve $tmux_want)
+        command ln -sfn flavor-$tmux_flavor.conf $tmux_link 2>/dev/null
+
+        if set -q TMUX
+            command tmux source-file $HOME/.config/tmux/tmux.conf 2>/dev/null
+            or true # a config error is not this handler's problem to report
+        end
+    end
 end
