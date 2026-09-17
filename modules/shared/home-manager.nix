@@ -23,6 +23,8 @@ in
         signingkey = sshPath "spicyzboss";
       };
       init.defaultBranch = "main";
+      # libgit2 (Grok worktrees, cargo) rejects extensions.refstorage
+      init.defaultRefFormat = "files";
       core = {
         editor = "hx";
         autocrlf = "input";

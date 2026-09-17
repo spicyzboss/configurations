@@ -50,11 +50,11 @@ function __apply_appearance --argument-names mode \
         command ln -sfn $lg_flavor.yml $lg_link 2>/dev/null
     end
 
-    # tmux has no light/dark switching either. tmux.conf sources flavor.conf for
-    # the catppuccin flavor, so flipping the symlink and re-sourcing the config
-    # -- what `prefix r` does -- repaints a running server. Only from inside a
-    # session: `tmux source-file` outside one would spawn a server just to
-    # theme it.
+    # tmux.conf sources flavor.conf for the catppuccin flavor. The client-*-theme
+    # hooks flip this symlink when kitty reports the OS appearance; this path is
+    # the fallback for terminals that do not, and seeds the flavor for the next
+    # server start. Re-source only from inside a session: `tmux source-file`
+    # outside one would spawn a server just to theme it.
     set -l tmux_flavor mocha
     test $mode = light; and set tmux_flavor latte
 
