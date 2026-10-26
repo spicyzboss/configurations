@@ -197,6 +197,14 @@ The link command creates symlinks into `~/.claude`. If a non-symlink file alread
 ./scripts/link-claude --force
 ```
 
+Other Claude profiles, each with its own `CLAUDE_CONFIG_DIR` such as `~/.claude-work.squad1`, can share the same `settings.json` and skills by passing their directories:
+
+```bash
+./scripts/link-claude ~/.claude-work.squad1 ~/.claude-work.squad2
+```
+
+A profile gets `settings.json` and one link per skill under `custom/claude/skills/`, placed inside its own `skills/` directory. That directory stays the profile's own because Claude Code syncs the skills enabled on claude.ai into `skills/synced`, per account. Run the command again after adding a skill. Credentials are not linked: on macOS the OAuth token is a Keychain item named after a hash of the profile's directory path, and the account is recorded in the profile's own `.claude.json`, so keep each profile's path unchanged.
+
 ---
 
 ## Fish Config

@@ -2,8 +2,9 @@
 set -eu
 
 usage() {
-  printf '%s\n' "Usage: $0 [--force]"
+  printf '%s\n' "Usage: $0 [--force] [profile-dir...]"
   printf '%s\n' "Links repo-tracked Claude config into ~/.claude."
+  printf '%s\n' "Each profile-dir (an extra CLAUDE_CONFIG_DIR) shares settings.json and the skills."
 }
 
 die() {
@@ -12,6 +13,7 @@ die() {
 }
 
 FORCE=0
+PROFILES=""
 
 while [ "$#" -gt 0 ]; do
   case "$1" in
@@ -22,9 +24,12 @@ while [ "$#" -gt 0 ]; do
       usage
       exit 0
       ;;
-    *)
+    -*)
       usage >&2
       die "Unknown argument: $1"
+      ;;
+    *)
+      PROFILES="$PROFILES $1"
       ;;
   esac
   shift
@@ -35,6 +40,11 @@ SOURCE_DIR="$REPO_ROOT/custom/claude"
 TIMESTAMP="$(date '+%Y%m%d%H%M%S')"
 
 [ -d "$SOURCE_DIR" ] || die "Missing Claude config: $SOURCE_DIR"
+
+for profile in $PROFILES; do
+  [ -d "$profile" ] || die "Missing profile dir: $profile"
+  [ ! -L "$profile/skills" ] || die "Not a separate profile: $profile/skills is a symlink."
+done
 
 mkdir -p "$HOME/.claude"
 
@@ -70,5 +80,18 @@ fi
 if [ -d "$SOURCE_DIR/skills" ]; then
   link_path "$SOURCE_DIR/skills" "$HOME/.claude/skills"
 fi
+
+for profile in $PROFILES; do
+  link_path "$SOURCE_DIR/settings.json" "$profile/settings.json"
+
+  # Link skills one by one: Claude Code syncs claude.ai skills into skills/synced
+  # per account, so the directory itself has to stay the profile's own.
+  mkdir -p "$profile/skills"
+  for skill in "$SOURCE_DIR"/skills/*/; do
+    skill="${skill%/}"
+    [ -f "$skill/SKILL.md" ] || continue
+    link_path "$skill" "$profile/skills/${skill##*/}"
+  done
+done
 
 printf '%s\n' "Claude config linked."
