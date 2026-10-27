@@ -5,6 +5,7 @@ usage() {
   printf '%s\n' "Usage: $0 [--force] [profile-dir...]"
   printf '%s\n' "Links repo-tracked Claude config into ~/.claude."
   printf '%s\n' "Each profile-dir (an extra CLAUDE_CONFIG_DIR) shares settings.json and the skills."
+  printf '%s\n' "Plugins enabled in settings.json are installed into ~/.claude and every profile-dir."
 }
 
 die() {
@@ -70,6 +71,36 @@ link_path() {
   printf '%s\n' "Linked $dest -> $src"
 }
 
+# Plugins live in each profile's own plugins/ directory, so the shared
+# settings.json only enables them. A fresh profile does not fetch the marketplaces
+# declared there, so add the ones an enabled plugin comes from first. Adding and
+# installing are idempotent, and installing also restores a plugin whose cache
+# directory went missing.
+install_plugins() {
+  config_dir="$1"
+
+  command -v claude >/dev/null 2>&1 || { printf '%s\n' "claude not found, skipping plugins for $config_dir" >&2; return 0; }
+  command -v jq >/dev/null 2>&1 || { printf '%s\n' "jq not found, skipping plugins for $config_dir" >&2; return 0; }
+
+  jq -r '(.extraKnownMarketplaces // {}) as $known
+    | .enabledPlugins // {} | to_entries[] | select(.value) | .key | split("@")[1] as $name
+    | $known[$name].source | select(.source == "github") | .repo' "$SOURCE_DIR/settings.json" |
+    sort -u |
+    while read -r repo; do
+      CLAUDE_CONFIG_DIR="$config_dir" claude plugin marketplace add "$repo" </dev/null >/dev/null 2>&1 ||
+        printf '%s\n' "Could not add marketplace $repo to $config_dir" >&2
+    done
+
+  jq -r '.enabledPlugins // {} | to_entries[] | select(.value) | .key' "$SOURCE_DIR/settings.json" |
+    while read -r plugin; do
+      if CLAUDE_CONFIG_DIR="$config_dir" claude plugin install "$plugin" </dev/null >/dev/null 2>&1; then
+        printf '%s\n' "Plugin $plugin ready in $config_dir"
+      else
+        printf '%s\n' "Could not install $plugin into $config_dir" >&2
+      fi
+    done
+}
+
 link_path "$SOURCE_DIR/settings.json" "$HOME/.claude/settings.json"
 link_path "$SOURCE_DIR/commands" "$HOME/.claude/commands"
 
@@ -80,6 +111,8 @@ fi
 if [ -d "$SOURCE_DIR/skills" ]; then
   link_path "$SOURCE_DIR/skills" "$HOME/.claude/skills"
 fi
+
+install_plugins "$HOME/.claude"
 
 for profile in $PROFILES; do
   link_path "$SOURCE_DIR/settings.json" "$profile/settings.json"
@@ -92,6 +125,8 @@ for profile in $PROFILES; do
     [ -f "$skill/SKILL.md" ] || continue
     link_path "$skill" "$profile/skills/${skill##*/}"
   done
+
+  install_plugins "$profile"
 done
 
 printf '%s\n' "Claude config linked."
